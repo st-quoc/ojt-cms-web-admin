@@ -30,8 +30,8 @@ export const navData = [
     icon: icon('ic-blog'),
   },
   {
-    title: 'Permissons',
-    path: '/permissons',
+    title: 'Managers',
+    path: '/managers',
     icon: icon('ic-user'),
   },
   {

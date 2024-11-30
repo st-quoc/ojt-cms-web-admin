@@ -262,8 +262,8 @@ export const BlogsListAdmin = () => {
     <Box sx={{ p: 4 }}>
       <AdminPageHeader
         breadcrumbs={[
-          { label: 'Admin', path: '/admin' },
-          { label: 'Blogs', path: '/admin/blogs' },
+          { label: 'Admin', path: '/' },
+          { label: 'Blogs', path: '/blogs' },
         ]}
       />
       <Divider textAlign="center" />

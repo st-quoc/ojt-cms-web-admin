@@ -273,8 +273,8 @@ export const VariantsPage = () => {
     <DashboardContent>
       <AdminPageHeader
         breadcrumbs={[
-          { label: 'Admin', path: '/admin' },
-          { label: 'Variants', path: '/admin/variants' },
+          { label: 'Admin', path: '/' },
+          { label: 'Variants', path: '/variants' },
         ]}
       />
       <Dialog

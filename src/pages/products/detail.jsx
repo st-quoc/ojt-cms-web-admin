@@ -86,9 +86,9 @@ export const DetailProductAdmin = () => {
     <Box sx={{ p: 4 }}>
       <AdminPageHeader
         breadcrumbs={[
-          { label: 'Admin', path: '/admin' },
-          { label: 'Products', path: '/admin/products' },
-          { label: product.name, path: `/admin/product/detail/${id}` },
+          { label: 'Admin', path: '/' },
+          { label: 'Products', path: '/products' },
+          { label: product.name, path: `/product/detail/${id}` },
         ]}
         buttons={[
           {

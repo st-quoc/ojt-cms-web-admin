@@ -79,12 +79,7 @@ export const ProductForm = ({ isEdit, onSubmit, defaultValues }) => {
   };
 
   return (
-    <Box
-      sx={{
-        maxWidth: 1000,
-        m: '0 auto',
-      }}
-    >
+    <Box sx={{ p: 3, width: '100%', maxWidth: 1000, mx: 'auto' }}>
       <ModalCreateColor
         open={openColorModal}
         onClose={() => setOpenColorModal(false)}
@@ -261,7 +256,9 @@ export const ProductForm = ({ isEdit, onSubmit, defaultValues }) => {
           <Box>
             <Button
               variant="outlined"
-              onClick={() => navigate(`/admin/product/detail/${defaultValues.id}`)}
+              onClick={() =>
+                navigate(`/admin/product/detail/${defaultValues.id}`)
+              }
             >
               Cancel
             </Button>

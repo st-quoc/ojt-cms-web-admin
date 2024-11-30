@@ -43,9 +43,9 @@ export function SignInView() {
       localStorage.setItem('userInfo', JSON.stringify(userInfo));
 
       if (['admin', 'manager'].includes(userInfo.role)) {
-        navigate('/admin');
-      } else {
         navigate('/');
+      } else {
+        navigate('/404');
       }
     } catch (error) {
       toast.error(

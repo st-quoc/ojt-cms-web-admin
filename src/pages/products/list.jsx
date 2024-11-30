@@ -76,12 +76,16 @@ function Row(props) {
         <TableCell align="center">
           <Stack direction="row" spacing={1}>
             <Tooltip title="Delete">
-              <IconButton color="error" onClick={() => handleOpenDialog(row.id)}>
+              <IconButton
+                color="error"
+                onClick={() => handleOpenDialog(row.id)}
+              >
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="Edit">
-              <IconButton color="primary"
+              <IconButton
+                color="primary"
                 onClick={() => navigate(`/admin/product/edit/${row.id}`)}
               >
                 <EditIcon />
@@ -246,13 +250,13 @@ const ProductsListAdmin = () => {
       <DashboardContent>
         <AdminPageHeader
           breadcrumbs={[
-            { label: 'Admin', path: '/admin' },
-            { label: 'Products', path: '/admin/products' },
+            { label: 'Admin', path: '/' },
+            { label: 'Products', path: '/products' },
           ]}
           buttons={[
             {
               label: 'Add Product',
-              onClick: () => navigate('/admin/product/create'),
+              onClick: () => navigate('/product/create'),
               variant: 'contained',
               color: 'primary',
             },

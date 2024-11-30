@@ -16,6 +16,9 @@ import { ProductCreateAdmin } from '../pages/products/create';
 import VariantsPage from '../pages/variants';
 import { BlogsListAdmin } from '../pages/blogs/list';
 import { Dashboard } from '../pages/dashboard';
+import { ManagersListAdmin } from '../pages/managers/list';
+import CreateManager from '../pages/managers/create';
+import EditManager from '../pages/managers/edit';
 
 const renderFallback = (
   <Box
@@ -61,10 +64,10 @@ export function Router() {
         { path: 'blogs/detail/:id', element: <BlogsListAdmin /> },
         { path: 'blogs/edit/:id', element: <BlogsListAdmin /> },
 
-        { path: 'permissions', element: <BlogsListAdmin /> },
-        { path: 'permissions/create', element: <BlogsListAdmin /> },
-        { path: 'permissions/detail/:id', element: <BlogsListAdmin /> },
-        { path: 'permissions/edit/:id', element: <BlogsListAdmin /> },
+        { path: 'managers', element: <ManagersListAdmin /> },
+        { path: 'managers/create', element: <CreateManager /> },
+        { path: 'managers/detail/:id', element: <BlogsListAdmin /> },
+        { path: 'managers/edit/:id', element: <EditManager /> },
       ],
     },
     {

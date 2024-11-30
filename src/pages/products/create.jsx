@@ -1,10 +1,13 @@
-import { Typography, Divider, Box } from '@mui/material';
+import { Typography, Divider } from '@mui/material';
 import { AdminPageHeader } from '../../components/AdminPageHeader';
 import { toast } from 'react-toastify';
 import { ProductForm } from './form';
 import { API_ROOT } from '../../constants';
 import axiosClient from '../../config/axios';
 import { useNavigate } from 'react-router-dom';
+import { DashboardContent } from '../../layouts/dashboard/main';
+import { CONFIG } from '../../config-global';
+import { Helmet } from 'react-helmet-async';
 
 export const ProductCreateAdmin = () => {
   const navigate = useNavigate();
@@ -21,7 +24,7 @@ export const ProductCreateAdmin = () => {
 
     try {
       await axiosClient.post(`${API_ROOT}/admin/product/create`, productData);
-      navigate('/admin/products');
+      navigate('/products');
       toast.success('Product created successfully!');
     } catch (error) {
       console.error('🚀 Error creating product: ', error);
@@ -30,39 +33,44 @@ export const ProductCreateAdmin = () => {
   };
 
   return (
-    <Box sx={{ p: 4 }}>
-      <AdminPageHeader
-        breadcrumbs={[
-          { label: 'Admin', path: '/admin' },
-          { label: 'Products', path: '/admin/products' },
-          { label: 'Create new product', path: `/admin/product/create` },
-        ]}
-      />
+    <>
+      <Helmet>
+        <title> {`${CONFIG.appName} - Create new product `}</title>
+      </Helmet>
+      <DashboardContent>
+        <AdminPageHeader
+          breadcrumbs={[
+            { label: 'Admin', path: '/' },
+            { label: 'Products', path: '/products' },
+            { label: 'Create new product', path: `/product/create` },
+          ]}
+        />
 
-      <Divider textAlign="center" sx={{ py: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          Create new product
-        </Typography>
-      </Divider>
+        <Divider textAlign="center" sx={{ py: 4 }}>
+          <Typography variant="h4" gutterBottom>
+            Create new product
+          </Typography>
+        </Divider>
 
-      <ProductForm
-        onSubmit={onSubmit}
-        defaultValues={{
-          name: '',
-          sortDesc: '',
-          fullDesc: '',
-          categories: [],
-          images: [],
-          variants: [
-            {
-              size: '',
-              color: '',
-              price: '',
-              stock: '',
-            },
-          ],
-        }}
-      />
-    </Box>
+        <ProductForm
+          onSubmit={onSubmit}
+          defaultValues={{
+            name: '',
+            sortDesc: '',
+            fullDesc: '',
+            categories: [],
+            images: [],
+            variants: [
+              {
+                size: '',
+                color: '',
+                price: '',
+                stock: '',
+              },
+            ],
+          }}
+        />
+      </DashboardContent>
+    </>
   );
 };
