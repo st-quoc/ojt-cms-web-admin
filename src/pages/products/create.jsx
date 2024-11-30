@@ -1,9 +1,9 @@
 import { Typography, Divider, Box } from '@mui/material';
-import { AdminPageHeader } from '../../../components/AdminPageHeader';
+import { AdminPageHeader } from '../../components/AdminPageHeader';
 import { toast } from 'react-toastify';
 import { ProductForm } from './form';
-import { API_ROOT } from '../../../constants';
-import axiosClient from '../../../config/axios';
+import { API_ROOT } from '../../constants';
+import axiosClient from '../../config/axios';
 import { useNavigate } from 'react-router-dom';
 
 export const ProductCreateAdmin = () => {

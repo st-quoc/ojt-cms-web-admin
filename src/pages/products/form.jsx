@@ -13,15 +13,15 @@ import {
   Box,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { Editor } from '../../../components/Editor';
-import CloudinaryMultipleUploader from '../../../components/CloudinaryMultipleUploader';
+import { Editor } from '../../components/Editor';
+import CloudinaryMultipleUploader from '../../components/CloudinaryMultipleUploader';
 import { ProductVariantsForm } from './ProductVariantsForm';
 import { rules } from './validator';
-import { API_ROOT } from '../../../constants';
-import axiosClient from '../../../config/axios';
-import ModalCreateSize from '../../../components/modal/size';
-import ModalCreateColor from '../../../components/modal/color';
-import ModalCreateCategory from '../../../components/modal/category';
+import { API_ROOT } from '../../constants';
+import axiosClient from '../../config/axios';
+import ModalCreateSize from '../../components/modal/size';
+import ModalCreateColor from '../../components/modal/color';
+import ModalCreateCategory from '../../components/modal/category';
 import { useNavigate } from 'react-router-dom';
 
 export const ProductForm = ({ isEdit, onSubmit, defaultValues }) => {

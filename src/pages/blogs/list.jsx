@@ -16,14 +16,11 @@ import { visuallyHidden } from '@mui/utils';
 import { useMemo, useState, useEffect } from 'react';
 import { Button, Divider, Stack, Modal, TextField } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { AdminPageHeader } from '../../../componentsAdminPageHeader';
-import { CloudinaryMultipleUploader } from '../../../components/CloudinaryMultipleUploader';
+import { AdminPageHeader } from '../../components/AdminPageHeader';
+import { CloudinaryMultipleUploader } from '../../components/CloudinaryMultipleUploader';
 import axios from 'axios';
-import { API_ROOT } from '../../../constants';
-import { toast } from 'react-toastify'; // Import react-toastify
-import 'react-toastify/dist/ReactToastify.css'; // Import CSS for Toast
-
-// Initialize Toastify
+import { API_ROOT } from '../../constants';
+import { toast } from 'react-toastify';
 
 const headCells = [
   {
@@ -168,7 +165,7 @@ const EnhancedTableToolbar = props => {
   );
 };
 
-export const BlogListAdmin = () => {
+export const BlogsListAdmin = () => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('title');
   const [selected, setSelected] = useState([]);

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Typography, Divider, Box } from '@mui/material';
-import { AdminPageHeader } from '../../../components/AdminPageHeader';
+import { AdminPageHeader } from '../../components/AdminPageHeader';
 import { toast } from 'react-toastify';
 import { BlogForm } from './form';
 

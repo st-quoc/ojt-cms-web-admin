@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -26,16 +25,17 @@ import {
   Stack,
   Tooltip,
 } from '@mui/material';
-import { API_ROOT } from '../../../constants';
-import axiosClient from '../../../config/axios';
+import { API_ROOT } from '../../constants';
+import axiosClient from '../../config/axios';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AutorenewIcon from '@mui/icons-material/Autorenew';
 import InfoIcon from '@mui/icons-material/Info';
 import EditIcon from '@mui/icons-material/Edit';
-import { DashboardContent } from '../../../layouts/dashboard/main';
-import { AdminPageHeader } from '../../../components/AdminPageHeader';
+import { DashboardContent } from '../../layouts/dashboard/main';
+import { AdminPageHeader } from '../../components/AdminPageHeader';
+import { Helmet } from 'react-helmet-async';
+import { CONFIG } from '../../config-global';
 
 function Row(props) {
   const navigate = useNavigate();
@@ -76,12 +76,12 @@ function Row(props) {
         <TableCell align="center">
           <Stack direction="row" spacing={1}>
             <Tooltip title="Delete">
-              <IconButton onClick={() => handleOpenDialog(row.id)}>
+              <IconButton color="error" onClick={() => handleOpenDialog(row.id)}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="Edit">
-              <IconButton
+              <IconButton color="primary"
                 onClick={() => navigate(`/admin/product/edit/${row.id}`)}
               >
                 <EditIcon />
@@ -92,11 +92,6 @@ function Row(props) {
                 onClick={() => navigate(`/admin/product/detail/${row.id}`)}
               >
                 <InfoIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Change status">
-              <IconButton>
-                <AutorenewIcon />
               </IconButton>
             </Tooltip>
           </Stack>
@@ -244,118 +239,123 @@ const ProductsListAdmin = () => {
   };
 
   return (
-    <DashboardContent>
-      <AdminPageHeader
-        breadcrumbs={[
-          { label: 'Admin', path: '/admin' },
-          { label: 'Products', path: '/admin/products' },
-        ]}
-        buttons={[
-          {
-            label: 'Add Product',
-            onClick: () => navigate('/admin/product/create'),
-            variant: 'contained',
-            color: 'primary',
-          },
-        ]}
-      />
-      <Box sx={{ my: 3 }}>
-        <ProductsFilter filters={filters} setFilters={setFilters} />
-      </Box>
+    <>
+      <Helmet>
+        <title> {`${CONFIG.appName} - Products list management `}</title>
+      </Helmet>
+      <DashboardContent>
+        <AdminPageHeader
+          breadcrumbs={[
+            { label: 'Admin', path: '/admin' },
+            { label: 'Products', path: '/admin/products' },
+          ]}
+          buttons={[
+            {
+              label: 'Add Product',
+              onClick: () => navigate('/admin/product/create'),
+              variant: 'contained',
+              color: 'primary',
+            },
+          ]}
+        />
+        <Box sx={{ my: 3 }}>
+          <ProductsFilter filters={filters} setFilters={setFilters} />
+        </Box>
 
-      {loading ? (
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="200px"
+        {loading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="200px"
+          >
+            <CircularProgress />
+          </Box>
+        ) : error ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="200px"
+          >
+            <Alert severity="error">{error}</Alert>
+          </Box>
+        ) : (
+          <>
+            {products.length === 0 ? (
+              <Typography variant="h6" color="textSecondary" align="center">
+                No products available.
+              </Typography>
+            ) : (
+              <Paper sx={{ width: '100%', overflow: 'hidden' }} elevation={3}>
+                <TableContainer component={Paper}>
+                  <Table aria-label="collapsible table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell />
+                        <TableCell>
+                          <strong>Images</strong>
+                        </TableCell>
+                        <TableCell align="left">
+                          <strong>Name</strong>
+                        </TableCell>
+                        <TableCell align="left">
+                          <strong>Categories</strong>
+                        </TableCell>
+                        <TableCell align="center">
+                          <strong>Actions</strong>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {products.map(row => (
+                        <Row
+                          key={row.id}
+                          row={row}
+                          handleOpenDialog={handleOpenDialog}
+                        />
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[10, 25, 100]}
+                  component="div"
+                  count={totalProducts}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </Paper>
+            )}
+          </>
+        )}
+
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
         >
-          <CircularProgress />
-        </Box>
-      ) : error ? (
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="200px"
-        >
-          <Alert severity="error">{error}</Alert>
-        </Box>
-      ) : (
-        <>
-          {products.length === 0 ? (
-            <Typography variant="h6" color="textSecondary" align="center">
-              No products available.
+          <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
+          <DialogContent>
+            <Typography variant="body1" color="textSecondary">
+              Are you sure you want to delete this product? This action cannot
+              be undone.
             </Typography>
-          ) : (
-            <Paper sx={{ width: '100%', overflow: 'hidden' }} elevation={3}>
-              <TableContainer component={Paper}>
-                <Table aria-label="collapsible table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell />
-                      <TableCell>
-                        <strong>Images</strong>
-                      </TableCell>
-                      <TableCell align="left">
-                        <strong>Name</strong>
-                      </TableCell>
-                      <TableCell align="left">
-                        <strong>Categories</strong>
-                      </TableCell>
-                      <TableCell align="center">
-                        <strong>Actions</strong>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {products.map(row => (
-                      <Row
-                        key={row.id}
-                        row={row}
-                        handleOpenDialog={handleOpenDialog}
-                      />
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={totalProducts}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </Paper>
-          )}
-        </>
-      )}
-
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1" color="textSecondary">
-            Are you sure you want to delete this product? This action cannot be
-            undone.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={handleConfirmDelete} color="primary" autoFocus>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </DashboardContent>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="secondary">
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmDelete} color="primary" autoFocus>
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </DashboardContent>
+    </>
   );
 };
 export default ProductsListAdmin;

@@ -1,10 +1,10 @@
 import { Typography, Divider, Box } from '@mui/material';
-import { AdminPageHeader } from '../../../components/AdminPageHeader';
+import { AdminPageHeader } from '../../components/AdminPageHeader';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ProductForm } from './form';
-import axiosClient from '../../../config/axios';
-import { API_ROOT } from '../../../constants';
+import axiosClient from '../../config/axios';
+import { API_ROOT } from '../../constants';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 

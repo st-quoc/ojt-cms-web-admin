@@ -1,4 +1,3 @@
-import { Label } from 'src/components/label';
 import { SvgColor } from 'src/components/svg-color';
 
 const icon = name => (
@@ -12,27 +11,32 @@ const icon = name => (
 export const navData = [
   {
     title: 'Dashboard',
-    path: '/admin',
+    path: '/',
     icon: icon('ic-analytics'),
   },
   {
-    title: 'Products Management',
-    path: '/admin/products',
+    title: 'Products',
+    path: '/products',
     icon: icon('ic-cart'),
   },
   {
-    title: 'Blogs Management',
-    path: '/admin/blog',
+    title: 'Variants',
+    path: '/variants',
+    icon: icon('ic-cart'),
+  },
+  {
+    title: 'Blogs',
+    path: '/blogs',
     icon: icon('ic-blog'),
   },
   {
-    title: 'Users Management',
-    path: '/admin/user',
+    title: 'Permissons',
+    path: '/permissons',
     icon: icon('ic-user'),
   },
   {
-    title: 'Permissons Management',
-    path: '/admin/user',
+    title: 'Users',
+    path: '/user',
     icon: icon('ic-user'),
   },
 ];
