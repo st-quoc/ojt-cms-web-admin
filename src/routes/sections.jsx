@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { Suspense } from 'react';
 import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import LinearProgress, {
@@ -7,13 +7,18 @@ import LinearProgress, {
 import { varAlpha } from 'src/theme/styles';
 import { AuthLayout } from 'src/layouts/auth';
 import { DashboardLayout } from 'src/layouts/dashboard';
-import ProductsListAdmin from '../pages/admin/products/list';
+import ProductsListAdmin from '../pages/products/list';
 import SignInPage from '../pages/sign-in';
 import Page404 from '../pages/page-not-found';
-import HomePage from '../pages/home';
-import { ProductEditAdmin } from '../pages/admin/products/edit';
-import { DetailProductAdmin } from '../pages/admin/products/detail';
-import { ProductCreateAdmin } from '../pages/admin/products/create';
+import { ProductEditAdmin } from '../pages/products/edit';
+import { DetailProductAdmin } from '../pages/products/detail';
+import { ProductCreateAdmin } from '../pages/products/create';
+import VariantsPage from '../pages/variants';
+import { BlogsListAdmin } from '../pages/blogs/list';
+import { Dashboard } from '../pages/dashboard';
+import { ManagersListAdmin } from '../pages/managers/list';
+import CreateManager from '../pages/managers/create';
+import EditManager from '../pages/managers/edit';
 
 const renderFallback = (
   <Box
@@ -44,13 +49,25 @@ export function Router() {
           </Suspense>
         </DashboardLayout>
       ),
-      path: 'admin',
       children: [
-        { element: <HomePage />, index: true },
+        { element: <Dashboard />, index: true },
+
         { path: 'products', element: <ProductsListAdmin /> },
         { path: 'product/create', element: <ProductCreateAdmin /> },
         { path: 'product/detail/:id', element: <DetailProductAdmin /> },
         { path: 'product/edit/:id', element: <ProductEditAdmin /> },
+
+        { path: 'variants', element: <VariantsPage /> },
+
+        { path: 'blogs', element: <BlogsListAdmin /> },
+        { path: 'blogs/create', element: <BlogsListAdmin /> },
+        { path: 'blogs/detail/:id', element: <BlogsListAdmin /> },
+        { path: 'blogs/edit/:id', element: <BlogsListAdmin /> },
+
+        { path: 'managers', element: <ManagersListAdmin /> },
+        { path: 'managers/create', element: <CreateManager /> },
+        { path: 'managers/detail/:id', element: <BlogsListAdmin /> },
+        { path: 'managers/edit/:id', element: <EditManager /> },
       ],
     },
     {

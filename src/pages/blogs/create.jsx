@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Typography } from '@mui/material';
 import { Box } from '@mui/material';
 import { Divider } from '@mui/material';
-import { AdminPageHeader } from '../../../components/AdminPageHeader';
+import { AdminPageHeader } from '../../components/AdminPageHeader';
 import { toast } from 'react-toastify';
 import { BlogForm } from './form';
 

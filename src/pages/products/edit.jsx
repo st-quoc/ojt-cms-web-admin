@@ -1,10 +1,10 @@
 import { Typography, Divider, Box } from '@mui/material';
-import { AdminPageHeader } from '../../../components/AdminPageHeader';
+import { AdminPageHeader } from '../../components/AdminPageHeader';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ProductForm } from './form';
-import axiosClient from '../../../config/axios';
-import { API_ROOT } from '../../../constants';
+import axiosClient from '../../config/axios';
+import { API_ROOT } from '../../constants';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -30,7 +30,7 @@ export const ProductEditAdmin = () => {
         `${API_ROOT}/admin/product/edit/${id}`,
         productData,
       );
-      navigate('/admin/products');
+      navigate('/products');
       toast.success(`Product: ${res.data.product.name} edited successfully!`);
     } catch (error) {
       console.log('🚀  error  🚀', error);
@@ -77,9 +77,9 @@ export const ProductEditAdmin = () => {
     <Box sx={{ p: 4 }}>
       <AdminPageHeader
         breadcrumbs={[
-          { label: 'Admin', path: '/admin' },
-          { label: 'Products', path: '/admin/products' },
-          { label: 'Edit product', path: `/admin/product/edit/${id}` },
+          { label: 'Admin', path: '/' },
+          { label: 'Products', path: '/products' },
+          { label: 'Edit product', path: `/product/edit/${id}` },
         ]}
       />
       <Divider textAlign="center" sx={{ py: 4 }}>

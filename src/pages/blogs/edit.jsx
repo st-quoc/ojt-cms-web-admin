@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Typography, Divider, Box } from '@mui/material';
-import { AdminPageHeader } from '../../../components/AdminPageHeader';
+import { AdminPageHeader } from '../../components/AdminPageHeader';
 import { toast } from 'react-toastify';
 import { BlogForm } from './form';
 
@@ -28,9 +28,9 @@ export const BlogEditAdmin = () => {
     <Box sx={{ p: 4 }}>
       <AdminPageHeader
         breadcrumbs={[
-          { label: 'Admin', path: '/admin' },
-          { label: 'Blogs', path: '/admin/blogs' },
-          { label: 'Create new blog', path: `/admin/blog/create` },
+          { label: 'Admin', path: '/' },
+          { label: 'Blogs', path: '/blogs' },
+          { label: 'Create new blog', path: `/blog/create` },
         ]}
       />
       <Divider textAlign="center" sx={{ py: 4 }}>

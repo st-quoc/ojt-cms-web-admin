@@ -1,7 +1,7 @@
 import axios from 'axios';
 import queryString from 'query-string';
 import { toast } from 'react-toastify';
-import { refreshTokenAPI } from '../apis';
+import { refreshTokenAPI } from '../apis/user';
 
 const apiURL = import.meta.env.VITE_API_URL;
 

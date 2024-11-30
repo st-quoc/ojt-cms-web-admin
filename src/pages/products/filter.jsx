@@ -14,8 +14,8 @@ import {
 } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useEffect, useState } from 'react';
-import axiosClient from '../../../config/axios';
-import { API_ROOT } from '../../../constants';
+import axiosClient from '../../config/axios';
+import { API_ROOT } from '../../constants';
 
 export const ProductsFilter = ({ filters, setFilters }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -238,7 +238,6 @@ export const ProductsFilter = ({ filters, setFilters }) => {
       ...filters,
       search: event.target.value,
     });
-    setPage(0);
   };
 
   const clearSearch = () => {
@@ -246,7 +245,6 @@ export const ProductsFilter = ({ filters, setFilters }) => {
       ...filters,
       search: '',
     });
-    setPage(0);
   };
 
   return (

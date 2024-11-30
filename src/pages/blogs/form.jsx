@@ -9,8 +9,8 @@ import {
   Box,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { Editor } from '../../../components/Editor';
-import CloudinaryMultipleUploader from '../../../components/CloudinaryMultipleUploader';
+import { Editor } from '../../components/Editor';
+import CloudinaryMultipleUploader from '../../components/CloudinaryMultipleUploader';
 import { rules } from './validator.js';
 
 export const BlogForm = ({ onSubmit, defaultValues }) => {

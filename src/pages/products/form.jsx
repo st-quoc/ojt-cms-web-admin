@@ -13,15 +13,15 @@ import {
   Box,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { Editor } from '../../../components/Editor';
-import CloudinaryMultipleUploader from '../../../components/CloudinaryMultipleUploader';
+import { Editor } from '../../components/Editor';
+import CloudinaryMultipleUploader from '../../components/CloudinaryMultipleUploader';
 import { ProductVariantsForm } from './ProductVariantsForm';
 import { rules } from './validator';
-import { API_ROOT } from '../../../constants';
-import axiosClient from '../../../config/axios';
-import ModalCreateSize from '../../../components/modal/size';
-import ModalCreateColor from '../../../components/modal/color';
-import ModalCreateCategory from '../../../components/modal/category';
+import { API_ROOT } from '../../constants';
+import axiosClient from '../../config/axios';
+import ModalCreateSize from '../../components/modal/size';
+import ModalCreateColor from '../../components/modal/color';
+import ModalCreateCategory from '../../components/modal/category';
 import { useNavigate } from 'react-router-dom';
 
 export const ProductForm = ({ isEdit, onSubmit, defaultValues }) => {
@@ -79,12 +79,7 @@ export const ProductForm = ({ isEdit, onSubmit, defaultValues }) => {
   };
 
   return (
-    <Box
-      sx={{
-        maxWidth: 1000,
-        m: '0 auto',
-      }}
-    >
+    <Box sx={{ p: 3, width: '100%', maxWidth: 1000, mx: 'auto' }}>
       <ModalCreateColor
         open={openColorModal}
         onClose={() => setOpenColorModal(false)}
@@ -261,7 +256,9 @@ export const ProductForm = ({ isEdit, onSubmit, defaultValues }) => {
           <Box>
             <Button
               variant="outlined"
-              onClick={() => navigate(`/admin/product/detail/${defaultValues.id}`)}
+              onClick={() =>
+                navigate(`/admin/product/detail/${defaultValues.id}`)
+              }
             >
               Cancel
             </Button>

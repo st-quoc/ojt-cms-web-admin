@@ -1,6 +1,6 @@
 import packageJson from '../package.json';
 
 export const CONFIG = {
-  appName: 'S_TIER SHOES',
+  appName: '[S-Tier]',
   appVersion: packageJson.version,
 };

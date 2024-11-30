@@ -12,9 +12,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import { Fragment, useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { API_ROOT } from '../../../constants';
-import axiosClient from '../../../config/axios';
-import { AdminPageHeader } from '../../../components/AdminPageHeader';
+import { API_ROOT } from '../../constants';
+import axiosClient from '../../config/axios';
+import { AdminPageHeader } from '../../components/AdminPageHeader';
 
 export const DetailProductAdmin = () => {
   const navigate = useNavigate();
@@ -86,9 +86,9 @@ export const DetailProductAdmin = () => {
     <Box sx={{ p: 4 }}>
       <AdminPageHeader
         breadcrumbs={[
-          { label: 'Admin', path: '/admin' },
-          { label: 'Products', path: '/admin/products' },
-          { label: product.name, path: `/admin/product/detail/${id}` },
+          { label: 'Admin', path: '/' },
+          { label: 'Products', path: '/products' },
+          { label: product.name, path: `/product/detail/${id}` },
         ]}
         buttons={[
           {
@@ -112,6 +112,7 @@ export const DetailProductAdmin = () => {
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
           {product.images.map((image, index) => (
             <Box
+              key={index}
               component="img"
               src={image}
               alt={`Product Image ${index + 1}`}

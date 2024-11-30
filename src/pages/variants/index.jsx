@@ -20,15 +20,16 @@ import {
   DialogActions,
   TextField,
 } from '@mui/material';
-import { AdminPageHeader } from '../../../componentsAdminPageHeader';
-import { API_ROOT } from '../../../constants';
-import axiosClient from '../../../config/axios';
+import { API_ROOT } from '../../constants';
+import axiosClient from '../../config/axios';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ModalCreateCategory from '../../../components/modal/category';
-import ModalCreateColor from '../../../components/modal/color';
-import ModalCreateSize from '../../../components/modal/size';
+import ModalCreateCategory from '../../components/modal/category';
+import ModalCreateColor from '../../components/modal/color';
+import ModalCreateSize from '../../components/modal/size';
+import { AdminPageHeader } from '../../components/AdminPageHeader';
 import { toast } from 'react-toastify';
+import { DashboardContent } from '../../layouts/dashboard/main';
 
 export const VariantsPage = () => {
   const [categories, setCategories] = useState([]);
@@ -209,9 +210,10 @@ export const VariantsPage = () => {
                         <img
                           src={row[column.toLowerCase()]}
                           alt="Thumbnail"
-
                           style={{
-                            w: 50, h: 50, objectFit: 'cover'
+                            width: '50px',
+                            height: '50px',
+                            objectFit: 'cover',
                           }}
                         />
                       ) : (
@@ -220,23 +222,25 @@ export const VariantsPage = () => {
                     </TableCell>
                   ))}
                   <TableCell align="left">
-                    <IconButton
-                      color="primary"
-                      onClick={() => {
-                        setCurrentEditItem(row);
-                        if (type === 'category') setOpenCategoryModal(true);
-                        if (type === 'color') setOpenColorModal(true);
-                        if (type === 'size') setOpenSizeModal(true);
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      color="error"
-                      onClick={() => handleDeleteItem(type, row._id)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
+                    <Stack direction="row" spacing={1}>
+                      <IconButton
+                        color="primary"
+                        onClick={() => {
+                          setCurrentEditItem(row);
+                          if (type === 'category') setOpenCategoryModal(true);
+                          if (type === 'color') setOpenColorModal(true);
+                          if (type === 'size') setOpenSizeModal(true);
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDeleteItem(type, row._id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Stack>
                   </TableCell>
                 </TableRow>
               ))}
@@ -266,11 +270,11 @@ export const VariantsPage = () => {
   );
 
   return (
-    <Box sx={{ p: 4 }}>
+    <DashboardContent>
       <AdminPageHeader
         breadcrumbs={[
-          { label: 'Admin', path: '/admin' },
-          { label: 'Variants', path: '/admin/variants' },
+          { label: 'Admin', path: '/' },
+          { label: 'Variants', path: '/variants' },
         ]}
       />
       <Dialog
@@ -367,7 +371,7 @@ export const VariantsPage = () => {
           sizeSearch,
           setSizeSearch,
         )}
-    </Box>
+    </DashboardContent>
   );
 };
 
