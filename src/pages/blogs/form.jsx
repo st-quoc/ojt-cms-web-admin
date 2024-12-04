@@ -7,38 +7,42 @@ import {
   Paper,
   Stack,
   Box,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { Editor } from '../../components/Editor';
-import CloudinaryMultipleUploader from '../../components/CloudinaryMultipleUploader';
 import { rules } from './validator.js';
+import CloudinarySingleUploader from '../../components/CloudinarySingleUploader/index.jsx';
+import { useNavigate } from 'react-router-dom';
 
-export const BlogForm = ({ onSubmit, defaultValues }) => {
+export const BlogForm = ({ isEdit, onSubmit, initialValues }) => {
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({ defaultValues });
+  } = useForm({ defaultValues: initialValues });
 
   useEffect(() => {
-    reset(defaultValues);
-  }, [defaultValues, reset]);
+    reset(initialValues);
+  }, [initialValues, reset]);
+
+  const handleCancel = () => {
+    navigate('/tiers');
+  };
 
   return (
-    <Box
-      sx={{
-        maxWidth: 1000,
-        m: '0 auto',
-      }}
-    >
+    <Box sx={{ p: 3, width: '100%', maxWidth: 1000, mx: 'auto' }}>
       <form
         onSubmit={e => {
           e.preventDefault();
           handleSubmit(onSubmit)(e);
         }}
       >
-        <Paper elevation={3}>
+        <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
           <Stack spacing={2}>
             <Typography variant="body1">
               <strong>Information:</strong>
@@ -57,38 +61,45 @@ export const BlogForm = ({ onSubmit, defaultValues }) => {
                 />
               )}
             />
-          </Stack>
-        </Paper>
-
-        <Paper sx={{ p: 4, mb: 4 }} elevation={3}>
-          <FormControl fullWidth>
-            <Stack spacing={2}>
-              <Typography variant="body1">
-                <strong>Thumbnail:</strong>
-              </Typography>
-              <Controller
-                name="thumbnail"
-                control={control}
-                rules={rules.thumbnail}
-                defaultValue={[]}
-                render={({ field }) => (
-                  <CloudinaryMultipleUploader
-                    images={field.value || []}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
-              {errors.thumbnail && (
-                <Typography color="error" variant="caption">
-                  {errors.thumbnail?.message}
-                </Typography>
+            <Controller
+              name="status"
+              control={control}
+              defaultValue="draft"
+              render={({ field }) => (
+                <FormControl fullWidth>
+                  <InputLabel>Status</InputLabel>
+                  <Select {...field} label="Status">
+                    <MenuItem value="draft">Draft</MenuItem>
+                    <MenuItem value="public">Public</MenuItem>
+                  </Select>
+                </FormControl>
               )}
-            </Stack>
-          </FormControl>
-        </Paper>
+            />
+            <FormControl fullWidth>
+              <Stack spacing={2}>
+                <Typography variant="body1">
+                  <strong>Thumbnail:</strong>
+                </Typography>
+                <Controller
+                  name="thumbnail"
+                  control={control}
+                  rules={rules.thumbnail}
+                  defaultValue={[]}
+                  render={({ field }) => (
+                    <CloudinarySingleUploader
+                      image={field.value || ''}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+                {errors.thumbnail && (
+                  <Typography color="error" variant="caption">
+                    {errors.thumbnail?.message}
+                  </Typography>
+                )}
+              </Stack>
+            </FormControl>
 
-        <Paper sx={{ p: 4, mb: 4 }} elevation={3}>
-          <Stack spacing={2}>
             <Typography variant="body1">
               <strong>Short Description:</strong>
             </Typography>
@@ -133,11 +144,13 @@ export const BlogForm = ({ onSubmit, defaultValues }) => {
         <Stack spacing={2} direction="row">
           <Box>
             <Button type="submit" variant="contained" color="primary">
-              Create
+              {isEdit ? 'Save' : 'Create'}
             </Button>
           </Box>
           <Box>
-            <Button variant="outlined">Cancel</Button>
+            <Button variant="outlined" onClick={handleCancel}>
+              Cancel
+            </Button>
           </Box>
         </Stack>
       </form>

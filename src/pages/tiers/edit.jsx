@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 import { API_ROOT } from '../../constants';
 import axiosClient from '../../config/axios';
@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 
 const EditTier = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [initialValues, setInitialValues] = useState(null);
 
   useEffect(() => {
@@ -29,7 +30,16 @@ const EditTier = () => {
   }, [id]);
 
   const handleUpdate = async values => {
-    await axiosClient.put(`/api/users/${id}`, values);
+    try {
+      const res = await axiosClient.put(
+        `${API_ROOT}/admin/tier/edit/${id}`,
+        values,
+      );
+      navigate('/tiers');
+      toast.success(`Tier: ${res.data.blog.name} edited successfully!`);
+    } catch (error) {
+      toast.error('Error editting tier!');
+    }
   };
 
   if (!initialValues) {

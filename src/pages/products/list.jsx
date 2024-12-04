@@ -86,14 +86,14 @@ function Row(props) {
             <Tooltip title="Edit">
               <IconButton
                 color="primary"
-                onClick={() => navigate(`/admin/product/edit/${row.id}`)}
+                onClick={() => navigate(`/product/edit/${row.id}`)}
               >
                 <EditIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="Detail">
               <IconButton
-                onClick={() => navigate(`/admin/product/detail/${row.id}`)}
+                onClick={() => navigate(`/product/detail/${row.id}`)}
               >
                 <InfoIcon />
               </IconButton>

@@ -114,7 +114,7 @@ export const ProductForm = ({ isEdit, onSubmit, defaultValues }) => {
                 <TextField
                   {...field}
                   fullWidth
-                  label="Tên sản phẩm"
+                  label="Product Name"
                   error={!!errors.name}
                   helperText={errors.name?.message}
                 />

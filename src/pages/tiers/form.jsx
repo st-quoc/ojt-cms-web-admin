@@ -36,7 +36,7 @@ const TierForm = ({ initialValues, isEdit, onSubmit }) => {
     <Box sx={{ p: 3, width: '100%', maxWidth: 1000, mx: 'auto' }}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Paper sx={{ p: 4, mb: 4 }} elevation={3}>
-          <FormControl fullWidth>
+          <FormControl fullWidth sx={{ mb: 4 }}>
             <Stack spacing={2}>
               <Typography variant="body1">
                 <strong>Image:</strong>
@@ -46,7 +46,7 @@ const TierForm = ({ initialValues, isEdit, onSubmit }) => {
                 control={control}
                 render={({ field }) => (
                   <CloudinarySingleUploader
-                    image={field.value || []}
+                    image={field.value || ''}
                     onChange={field.onChange}
                   />
                 )}

@@ -26,6 +26,8 @@ import { TiersListAdmin } from '../pages/tiers/list';
 import CreateTier from '../pages/tiers/create';
 import EditTier from '../pages/tiers/edit';
 import {  ProfileAdmin } from '../pages/profile';
+import BlogCreateAdmin from '../pages/blogs/create';
+import { BlogEditAdmin } from '../pages/blogs/edit';
 
 const renderFallback = (
   <Box
@@ -67,9 +69,9 @@ export function Router() {
         { path: 'variants', element: <VariantsPage /> },
 
         { path: 'blogs', element: <BlogsListAdmin /> },
-        { path: 'blogs/create', element: <BlogsListAdmin /> },
-        { path: 'blogs/detail/:id', element: <BlogsListAdmin /> },
-        { path: 'blogs/edit/:id', element: <BlogsListAdmin /> },
+        { path: 'blogs/create', element: <BlogCreateAdmin /> },
+        { path: 'blogs/detail/:id', element: <BlogEditAdmin /> },
+        { path: 'blogs/edit/:id', element: <BlogEditAdmin /> },
 
         { path: 'managers', element: <ManagersListAdmin /> },
         { path: 'managers/create', element: <CreateManager /> },

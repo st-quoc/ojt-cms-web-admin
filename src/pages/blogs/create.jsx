@@ -1,25 +1,30 @@
-import axios from 'axios';
 import { Typography } from '@mui/material';
 import { Box } from '@mui/material';
 import { Divider } from '@mui/material';
 import { AdminPageHeader } from '../../components/AdminPageHeader';
 import { toast } from 'react-toastify';
 import { BlogForm } from './form';
+import axiosClient from '../../config/axios';
+import { API_ROOT } from '../../constants';
+import { useNavigate } from 'react-router-dom';
 
 export const BlogCreateAdmin = () => {
+  const navigate = useNavigate();
+
   const onSubmit = async data => {
     const blogData = {
-      title: data.title,
       thumbnail: data.thumbnail,
-      categories: data.categories || [],
-      status: data.status || 'Draft',
+      title: data.title,
+      sortDesc: data.sortDesc,
+      fullDesc: data.fullDesc,
+      status: data.status || 'draft',
     };
 
     try {
-      await axios.post(`/api/blogs`, blogData);
+      await axiosClient.post(`${API_ROOT}/admin/blog/create`, blogData);
+      navigate('/blogs');
       toast.success('Blog created successfully!');
-    } catch (error) {
-      console.error('Error creating blog:', error);
+    } catch {
       toast.error('Failed to create blog!');
     }
   };
@@ -41,11 +46,12 @@ export const BlogCreateAdmin = () => {
 
       <BlogForm
         onSubmit={onSubmit}
-        defaultValues={{
-          title: '',
+        initialValues={{
           thumbnail: '',
-          categories: [],
-          status: 'Draft',
+          title: '',
+          sortDesc: '',
+          fullDesc: '',
+          status: 'draft',
         }}
       />
     </Box>
