@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -18,7 +18,7 @@ import { CONFIG } from '../../config-global';
 import { Helmet } from 'react-helmet-async';
 import { DashboardContent } from '../../layouts/dashboard/main';
 import { Box, Chip } from '@mui/material';
-import { fetchManagers, updateManagerStatus } from '../../apis/user';
+import { updateManagerStatus } from '../../apis/user';
 import {
   Dialog,
   DialogActions,
@@ -28,6 +28,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import useFetchManagers from '../../hooks/apis/useFetchManagers';
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -40,31 +41,18 @@ const headCells = [
 
 export const ManagersListAdmin = () => {
   const navigate = useNavigate();
-  const [managers, setManagers] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [search, setSearch] = useState('');
-  const [totalCount, setTotalCount] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedManagerId, setSelectedManagerId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState('');
 
-  useEffect(() => {
-    const loadManagers = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchManagers(page, rowsPerPage, search);
-        setManagers(data.managers);
-        setTotalCount(data.totalCount);
-      } catch (error) {
-        console.error('Failed to fetch managers:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadManagers();
-  }, [page, rowsPerPage, search]);
+  const { managers, loading, totalItems, fetchManagers } = useFetchManagers(
+    page,
+    rowsPerPage,
+    search,
+  );
 
   const handlePageChange = (_, newPage) => {
     setPage(newPage);
@@ -89,9 +77,7 @@ export const ManagersListAdmin = () => {
   const handleConfirmChangeStatus = async () => {
     try {
       await updateManagerStatus(selectedManagerId, { status: selectedStatus });
-      const data = await fetchManagers(page, rowsPerPage, search);
-      setManagers(data.managers);
-      setTotalCount(data.totalCount);
+      fetchManagers();
       setOpenDialog(false);
     } catch (error) {
       console.error('Failed to update manager status:', error);
@@ -217,7 +203,7 @@ export const ManagersListAdmin = () => {
           )}
           <TablePagination
             component="div"
-            count={totalCount}
+            count={totalItems}
             page={page}
             onPageChange={handlePageChange}
             rowsPerPage={rowsPerPage}

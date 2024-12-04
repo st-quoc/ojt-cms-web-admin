@@ -31,7 +31,7 @@ export const BlogForm = ({ isEdit, onSubmit, initialValues }) => {
   }, [initialValues, reset]);
 
   const handleCancel = () => {
-    navigate('/tiers');
+    navigate('/blogs');
   };
 
   return (

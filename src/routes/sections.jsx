@@ -25,7 +25,7 @@ import EditUser from '../pages/users/edit';
 import { TiersListAdmin } from '../pages/tiers/list';
 import CreateTier from '../pages/tiers/create';
 import EditTier from '../pages/tiers/edit';
-import {  ProfileAdmin } from '../pages/profile';
+import { ProfileAdmin } from '../pages/profile';
 import BlogCreateAdmin from '../pages/blogs/create';
 import { BlogEditAdmin } from '../pages/blogs/edit';
 
@@ -88,17 +88,12 @@ export function Router() {
         { path: 'tiers/detail/:id', element: <BlogsListAdmin /> },
         { path: 'tiers/edit/:id', element: <EditTier /> },
 
-
         { path: 'promotions/list/', element: <EditTier /> },
         { path: 'promotions/create', element: <EditTier /> },
         { path: 'promotions/detail/:id', element: <EditTier /> },
         { path: 'promotions/edit/:id', element: <EditTier /> },
 
         { path: 'profile', element: <ProfileAdmin /> },
-        { path: 'promotions/create', element: <EditTier /> },
-        { path: 'promotions/detail/:id', element: <EditTier /> },
-        { path: 'promotions/edit/:id', element: <EditTier /> },
-
       ],
     },
     {

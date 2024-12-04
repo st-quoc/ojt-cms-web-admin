@@ -45,8 +45,8 @@ export const navData = [
     icon: icon('ic-user'),
   },
   {
-    title: 'Promotions',
-    path: '/promotions',
+    title: 'Profile',
+    path: '/profile',
     icon: icon('ic-user'),
   },
 ];

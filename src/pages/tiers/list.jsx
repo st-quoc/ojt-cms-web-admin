@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,7 +11,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { AdminPageHeader } from '../../components/AdminPageHeader';
 import { CONFIG } from '../../config-global';
 import { Helmet } from 'react-helmet-async';
@@ -19,7 +19,11 @@ import { DashboardContent } from '../../layouts/dashboard/main';
 import { Box } from '@mui/material';
 import { Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { fetchTiers } from '../../apis/tiers';
+import { API_ROOT } from '../../constants';
+import axiosClient from '../../config/axios';
+import { toast } from 'react-toastify';
+import useFetchTiers from '../../hooks/apis/useFetchTiers';
+import ConfirmDeleteModal from '../../components/ModalConfirmDelete';
 
 const headCells = [
   { id: 'image', label: 'Thumbnail' },
@@ -32,28 +36,36 @@ const headCells = [
 
 export const TiersListAdmin = () => {
   const navigate = useNavigate();
-  const [tiers, setTiers] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [search, setSearch] = useState('');
-  const [totalCount, setTotalCount] = useState(0);
 
-  useEffect(() => {
-    const loadTiers = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchTiers(page, rowsPerPage, search);
-        setTiers(data.tiers);
-        setTotalCount(data.pagination.total);
-      } catch (error) {
-        console.error('Failed to fetch tiers:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadTiers();
-  }, [page, rowsPerPage, search]);
+  const { tiers, loading, totalItems, fetchTiers } = useFetchTiers(
+    page,
+    rowsPerPage,
+    search,
+  );
+
+  const [isModalOpenDel, setModalOpenDel] = useState(false);
+  const [itemDel, setItemDel] = useState(null);
+
+  const handleOpenModalDel = id => {
+    setItemDel(id);
+    setModalOpenDel(true);
+  };
+  const handleCloseModalDel = () => setModalOpenDel(false);
+
+  const handleConfirmDel = async () => {
+    try {
+      await axiosClient.delete(`${API_ROOT}/admin/blog/delete/${itemDel}`);
+      setItemDel(null);
+      fetchTiers();
+      toast.success('Deleted blog succsessfully!');
+    } catch (error) {
+      toast.error('Delete blog failed!');
+    }
+    handleCloseModalDel();
+  };
 
   const handlePageChange = (_, newPage) => {
     setPage(newPage);
@@ -141,8 +153,11 @@ export const TiersListAdmin = () => {
                           </Tooltip>
 
                           <Tooltip title="View Details">
-                            <IconButton>
-                              <VisibilityIcon color="secondary" />
+                            <IconButton
+                            color="error"
+                              onClick={() => handleOpenModalDel(tier._id)}
+                            >
+                              <DeleteIcon />
                             </IconButton>
                           </Tooltip>
                         </TableCell>
@@ -163,13 +178,18 @@ export const TiersListAdmin = () => {
           )}
           <TablePagination
             component="div"
-            count={totalCount}
+            count={totalItems}
             page={page}
             onPageChange={handlePageChange}
             rowsPerPage={rowsPerPage}
             onRowsPerPageChange={handleRowsPerPageChange}
           />
         </Box>
+        <ConfirmDeleteModal
+          open={isModalOpenDel}
+          onConfirm={handleConfirmDel}
+          onCancel={handleCloseModalDel}
+        />
       </DashboardContent>
     </>
   );

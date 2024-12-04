@@ -2,15 +2,13 @@ import { AdminPageHeader } from '../../components/AdminPageHeader';
 import { CONFIG } from '../../config-global';
 import { Helmet } from 'react-helmet-async';
 import { DashboardContent } from '../../layouts/dashboard/main';
-import { Box, Paper, Stack, Tab, Tabs } from '@mui/material';
+import { Box, Paper, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { Permissions } from './Permissions';
 import { ProfileTab } from './Profile';
 
 export const ProfileAdmin = () => {
   const [currentTab, setCurrentTab] = useState(0);
-
-
 
   const handleChangeTab = (event, newValue) => {
     setCurrentTab(newValue);
@@ -30,18 +28,10 @@ export const ProfileAdmin = () => {
             <Tabs value={currentTab} onChange={handleChangeTab}>
               <Tab label="Profile" value={0} />
               <Tab label="Permissions" value={1} />
-              <Tab label="Activities" value={2} />
             </Tabs>
           </Box>
           {currentTab === 0 && <ProfileTab />}
           {currentTab === 1 && <Permissions />}
-          {currentTab === 2 && (
-            <Box sx={{ p: 3 }}>
-              <Stack>
-                <Box></Box>
-              </Stack>
-            </Box>
-          )}
         </Paper>
       </DashboardContent>
     </>

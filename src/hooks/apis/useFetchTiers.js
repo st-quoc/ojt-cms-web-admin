@@ -2,15 +2,15 @@ import { useState, useEffect } from 'react';
 import axiosClient from '../../config/axios';
 import { API_ROOT } from '../../constants';
 
-const useFetchBlogs = (page, rowsPerPage, search) => {
-  const [blogs, setBlogs] = useState([]);
+const useFetchTiers = (page, rowsPerPage, search) => {
+  const [tiers, setTiers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [totalItems, setTotalItems] = useState(0);
 
-  const fetchBlogs = async () => {
+  const fetchTiers = async () => {
     try {
-      const response = await axiosClient.get(`${API_ROOT}/admin/blog/list`, {
+      const response = await axiosClient.get(`${API_ROOT}/admin/tier/list`, {
         params: {
           page: page + 1,
           limit: rowsPerPage,
@@ -18,20 +18,20 @@ const useFetchBlogs = (page, rowsPerPage, search) => {
         },
       });
 
-      setBlogs(response.data.blogs);
-      setTotalItems(response.data.pagination.totalItems);
+      setTiers(response.data.tiers);
+      setTotalItems(response.data.pagination.total);
     } catch (err) {
-      setError(err.message || 'Failed to fetch blogs');
+      setError(err.message || 'Failed to fetch tiers');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchBlogs();
+    fetchTiers();
   }, []);
 
-  return { blogs, loading, error, totalItems, fetchBlogs };
+  return { tiers, loading, error, totalItems, fetchTiers };
 };
 
-export default useFetchBlogs;
+export default useFetchTiers;

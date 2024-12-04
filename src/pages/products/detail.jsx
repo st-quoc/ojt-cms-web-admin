@@ -227,7 +227,7 @@ export const DetailProductAdmin = () => {
             <Typography variant="body1">
               <strong>Description:</strong>
             </Typography>
-            <Box dangerouslySetInnerHTML={{ __html: product.description }} />
+            <Box dangerouslySetInnerHTML={{ __html: product.fullDesc }} />
           </Stack>
         </Stack>
       </Paper>

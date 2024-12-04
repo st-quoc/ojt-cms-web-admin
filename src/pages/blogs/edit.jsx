@@ -41,7 +41,7 @@ export const BlogEditAdmin = () => {
         blogData,
       );
       navigate('/blogs');
-      toast.success(`Blog: ${res.data.blog.name} edited successfully!`);
+      toast.success(`Blog: ${res.data.blog.title} edited successfully!`);
     } catch (error) {
       toast.error('Error editting blog!');
     }

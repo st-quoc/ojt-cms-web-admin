@@ -118,7 +118,19 @@ export function AccountPopover({ data = [], sx, ...other }) {
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Box sx={{ p: 1 }}>
-          <Button fullWidth color="error" size="medium" variant="text">
+          <Button
+            fullWidth
+            color="error"
+            size="medium"
+            variant="text"
+            onClick={() => {
+              localStorage.removeItem('accessToken');
+              localStorage.removeItem('refreshToken');
+              localStorage.removeItem('userInfo');
+
+              location.href = '/login';
+            }}
+          >
             Logout
           </Button>
         </Box>

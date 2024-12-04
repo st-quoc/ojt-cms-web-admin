@@ -22,6 +22,11 @@ import InfoIcon from '@mui/icons-material/Info';
 import { Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import useFetchBlogs from '../../hooks/apis/useFetchBlogs';
+import ConfirmDeleteModal from '../../components/ModalConfirmDelete';
+import axiosClient from '../../config/axios';
+import { toast } from 'react-toastify';
+import { API_ROOT } from '../../constants';
+import ConfirmChangeStatusModal from '../../components/ModalConfirmChangeStatus';
 
 const headCells = [
   { id: 'thumbnail', label: 'Thumbnail' },
@@ -38,11 +43,55 @@ export const BlogsListAdmin = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [search, setSearch] = useState('');
 
-  const { blogs, loading, totalItems } = useFetchBlogs(
+  const [isModalOpenDel, setModalOpenDel] = useState(false);
+  const [itemDel, setItemDel] = useState(null);
+
+  const [isModalOpenChangeStt, setModalOpenChangeStt] = useState(false);
+  const [itemChangeStt, setItemChangeStt] = useState(null);
+
+  const { blogs, loading, totalItems, fetchBlogs } = useFetchBlogs(
     page,
     rowsPerPage,
     search,
   );
+
+  const handleOpenModalDel = id => {
+    setItemDel(id);
+    setModalOpenDel(true);
+  };
+  const handleCloseModalDel = () => setModalOpenDel(false);
+
+  const handleConfirmDel = async () => {
+    try {
+      await axiosClient.delete(`${API_ROOT}/admin/blog/delete/${itemDel}`);
+      setItemDel(null);
+      fetchBlogs();
+      toast.success('Deleted blog succsessfully!');
+    } catch (error) {
+      toast.error('Delete blog failed!');
+    }
+    handleCloseModalDel();
+  };
+
+  const handleOpenModalChangeStt = id => {
+    setItemChangeStt(id);
+    setModalOpenChangeStt(true);
+  };
+  const handleCloseModalChangeStt = () => setModalOpenChangeStt(false);
+
+  const handleConfirmChangeStt = async () => {
+    try {
+      await axiosClient.put(
+        `${API_ROOT}/admin/blog/change-status/${itemChangeStt}`,
+      );
+      setItemChangeStt(null);
+      fetchBlogs();
+      toast.success('Change status blog succsessfully!');
+    } catch (error) {
+      toast.error('Change status blog failed!');
+    }
+    handleCloseModalChangeStt();
+  };
 
   const handleRowsPerPageChange = event => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -138,12 +187,20 @@ export const BlogsListAdmin = () => {
                         <TableCell>
                           <Stack direction="row" spacing={1}>
                             <Tooltip title="Delete">
-                              <IconButton color="error">
+                              <IconButton
+                                color="error"
+                                onClick={() => handleOpenModalDel(blog._id)}
+                              >
                                 <DeleteIcon />
                               </IconButton>
                             </Tooltip>
                             <Tooltip title="Change Status">
-                              <IconButton color="error">
+                              <IconButton
+                                color="error"
+                                onClick={() =>
+                                  handleOpenModalChangeStt(blog._id)
+                                }
+                              >
                                 <ToggleOnIcon />
                               </IconButton>
                             </Tooltip>
@@ -192,6 +249,18 @@ export const BlogsListAdmin = () => {
             onRowsPerPageChange={handleRowsPerPageChange}
           />
         </Box>
+        <ConfirmChangeStatusModal
+          open={isModalOpenChangeStt}
+          title="Confirm Change Status"
+          description="Are you sure you want to change the status of this blog?"
+          onConfirm={handleConfirmChangeStt}
+          onCancel={handleCloseModalChangeStt}
+        />
+        <ConfirmDeleteModal
+          open={isModalOpenDel}
+          onConfirm={handleConfirmDel}
+          onCancel={handleCloseModalDel}
+        />
       </DashboardContent>
     </>
   );
