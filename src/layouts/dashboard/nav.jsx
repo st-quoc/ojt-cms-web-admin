@@ -11,7 +11,7 @@ import { varAlpha } from 'src/theme/styles';
 import { Logo } from 'src/components/logo';
 import { Scrollbar } from 'src/components/scrollbar';
 
-export function NavDesktop({ sx, data, slots, workspaces, layoutQuery }) {
+export function NavDesktop({ sx, data, slots, layoutQuery }) {
   const theme = useTheme();
 
   return (
@@ -35,12 +35,12 @@ export function NavDesktop({ sx, data, slots, workspaces, layoutQuery }) {
         ...sx,
       }}
     >
-      <NavContent data={data} slots={slots} workspaces={workspaces} />
+      <NavContent data={data} slots={slots} />
     </Box>
   );
 }
 
-export function NavMobile({ sx, data, open, slots, onClose, workspaces }) {
+export function NavMobile({ sx, data, open, slots, onClose }) {
   const pathname = usePathname();
 
   useEffect(() => {
@@ -65,12 +65,12 @@ export function NavMobile({ sx, data, open, slots, onClose, workspaces }) {
         },
       }}
     >
-      <NavContent data={data} slots={slots} workspaces={workspaces} />
+      <NavContent data={data} slots={slots} />
     </Drawer>
   );
 }
 
-export function NavContent({ data, slots, workspaces, sx }) {
+export function NavContent({ data, slots, sx }) {
   const pathname = usePathname();
 
   return (

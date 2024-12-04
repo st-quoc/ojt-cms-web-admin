@@ -2,42 +2,51 @@ import { Helmet } from 'react-helmet-async';
 import { AdminPageHeader } from '../../components/AdminPageHeader';
 import { CONFIG } from '../../config-global';
 import { DashboardContent } from '../../layouts/dashboard/main';
-import ManagerForm from './form';
+import UserForm from './form';
 import { Divider, Typography } from '@mui/material';
 import { API_ROOT } from '../../constants';
 import axiosClient from '../../config/axios';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
-const CreateManager = () => {
+const CreateUser = () => {
+  const navigate = useNavigate();
+
   const initialValues = {
     name: '',
     email: '',
     phoneNumber: '',
     status: '',
-    permissions: [],
   };
 
   const handleCreate = async values => {
-    await axiosClient.post(`${API_ROOT}/admin/manager/create`, values);
+    try {
+      await axiosClient.post(`${API_ROOT}/admin/user/create`, values);
+      navigate('/user');
+      toast.success('User created successfully!');
+    } catch {
+      toast.error('Failed to create user!');
+    }
   };
 
   return (
     <>
       <Helmet>
-        <title> {`${CONFIG.appName} - Create new managers `}</title>
+        <title> {`${CONFIG.appName} - Create new users `}</title>
       </Helmet>
       <DashboardContent>
         <AdminPageHeader
           breadcrumbs={[
             { label: 'Admin', path: '/' },
-            { label: 'Managers', path: '/managers' },
+            { label: 'Users', path: '/users' },
           ]}
         />
         <Divider textAlign="center" sx={{ py: 4 }}>
           <Typography variant="h4" gutterBottom>
-            Create new manager
+            Create new user
           </Typography>
         </Divider>
-        <ManagerForm
+        <UserForm
           initialValues={initialValues}
           isEdit={false}
           onSubmit={handleCreate}
@@ -47,4 +56,4 @@ const CreateManager = () => {
   );
 };
 
-export default CreateManager;
+export default CreateUser;

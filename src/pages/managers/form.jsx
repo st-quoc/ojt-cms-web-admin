@@ -147,11 +147,6 @@ const ManagerForm = ({ initialValues, isEdit, onSubmit }) => {
                     <FormGroup>
                       <Grid container spacing={2} sx={{ py: 2, px: 4 }}>
                         {permissions
-                          .filter(permission =>
-                            permission.description
-                              .toLowerCase()
-                              .includes(search.toLowerCase()),
-                          )
                           .map(permission => (
                             <Grid
                               item

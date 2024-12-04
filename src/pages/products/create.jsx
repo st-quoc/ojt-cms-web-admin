@@ -26,8 +26,7 @@ export const ProductCreateAdmin = () => {
       await axiosClient.post(`${API_ROOT}/admin/product/create`, productData);
       navigate('/products');
       toast.success('Product created successfully!');
-    } catch (error) {
-      console.error('🚀 Error creating product: ', error);
+    } catch {
       toast.error('Error creating product!');
     }
   };

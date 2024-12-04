@@ -33,6 +33,32 @@ export const updateManagerStatus = async (managerId, statusData) => {
   }
 };
 
+export const fetchUsers = async (page, rowsPerPage, search) => {
+  const response = await axiosClient.get(`${API_ROOT}/admin/user/list`, {
+    params: {
+      page: page + 1,
+      limit: rowsPerPage,
+      search,
+    },
+  });
+
+  return response.data;
+};
+
+export const updateUserStatus = async (userId, statusData) => {
+  try {
+    const response = await axiosClient.put(
+      `${API_ROOT}/admin/user/change-status/${userId}`,
+      statusData,
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user status:', error);
+    throw error;
+  }
+};
+
 export const fetchPermissions = async (page, search) => {
   const response = await axiosClient.get(`${API_ROOT}/auth/permissions/list`, {
     params: {

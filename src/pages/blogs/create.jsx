@@ -28,9 +28,9 @@ export const BlogCreateAdmin = () => {
     <Box>
       <AdminPageHeader
         breadcrumbs={[
-          { label: 'Admin', path: `/admin` },
-          { label: 'Blogs', path: `/admin/blogs` },
-          { label: 'Create New Blog', path: `/admin/blogs/create` },
+          { label: 'Admin', path: `/` },
+          { label: 'Blogs', path: `//blogs` },
+          { label: 'Create New Blog', path: `/blogs/create` },
         ]}
       />
       <Divider textAlign="center" sx={{ py: 4 }}>
