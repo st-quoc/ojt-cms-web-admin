@@ -168,7 +168,7 @@ export const VariantsPage = () => {
     searchValue,
     setSearchValue,
   ) => (
-    <Paper elevation={3} sx={{ display: 'flex', flex: 1 }}>
+    <Paper elevation={3} sx={{ display: 'flex', flex: 1 }} role="tabpanel">
       <Stack spacing={2} p={2} sx={{ flex: 1 }}>
         <Stack direction="row" justifyContent="space-between">
           <Box>

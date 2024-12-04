@@ -33,8 +33,7 @@ export const ProductEditAdmin = () => {
       navigate('/products');
       toast.success(`Product: ${res.data.product.name} edited successfully!`);
     } catch (error) {
-      console.log('🚀  error  🚀', error);
-      toast.error('Error editting product!' + error);
+      toast.error('Error editting product!');
     }
   };
 
@@ -51,7 +50,6 @@ export const ProductEditAdmin = () => {
       setProduct(formattedProduct);
       setLoading(false);
     } catch (err) {
-      console.log('🚀  err  🚀', err);
       setError('Failed to load product details');
       setLoading(false);
     }

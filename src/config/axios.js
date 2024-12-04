@@ -15,6 +15,11 @@ axiosClient.defaults.timeout = 1000 * 60 * 10;
 
 axiosClient.interceptors.request.use(
   config => {
+    if (config.data instanceof FormData) {
+      delete config.headers['Content-Type'];
+    } else {
+      config.headers['Content-Type'] = 'application/json';
+    }
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;

@@ -43,7 +43,6 @@ export const DetailProductAdmin = () => {
       setProduct(response.data.product);
       setLoading(false);
     } catch (err) {
-      console.log('🚀  err  🚀', err);
       setError('Failed to load product details');
       setLoading(false);
     }

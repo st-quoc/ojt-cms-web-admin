@@ -19,6 +19,13 @@ import { Dashboard } from '../pages/dashboard';
 import { ManagersListAdmin } from '../pages/managers/list';
 import CreateManager from '../pages/managers/create';
 import EditManager from '../pages/managers/edit';
+import { UsersListAdmin } from '../pages/users/list';
+import CreateUser from '../pages/users/create';
+import EditUser from '../pages/users/edit';
+import { TiersListAdmin } from '../pages/tiers/list';
+import CreateTier from '../pages/tiers/create';
+import EditTier from '../pages/tiers/edit';
+import {  ProfileAdmin } from '../pages/profile';
 
 const renderFallback = (
   <Box
@@ -68,6 +75,28 @@ export function Router() {
         { path: 'managers/create', element: <CreateManager /> },
         { path: 'managers/detail/:id', element: <BlogsListAdmin /> },
         { path: 'managers/edit/:id', element: <EditManager /> },
+
+        { path: 'users', element: <UsersListAdmin /> },
+        { path: 'users/create', element: <CreateUser /> },
+        { path: 'users/detail/:id', element: <BlogsListAdmin /> },
+        { path: 'users/edit/:id', element: <EditUser /> },
+
+        { path: 'tiers', element: <TiersListAdmin /> },
+        { path: 'tiers/create', element: <CreateTier /> },
+        { path: 'tiers/detail/:id', element: <BlogsListAdmin /> },
+        { path: 'tiers/edit/:id', element: <EditTier /> },
+
+
+        { path: 'promotions/list/', element: <EditTier /> },
+        { path: 'promotions/create', element: <EditTier /> },
+        { path: 'promotions/detail/:id', element: <EditTier /> },
+        { path: 'promotions/edit/:id', element: <EditTier /> },
+
+        { path: 'profile', element: <ProfileAdmin /> },
+        { path: 'promotions/create', element: <EditTier /> },
+        { path: 'promotions/detail/:id', element: <EditTier /> },
+        { path: 'promotions/edit/:id', element: <EditTier /> },
+
       ],
     },
     {

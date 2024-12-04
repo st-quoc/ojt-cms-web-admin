@@ -1,6 +1,4 @@
-
 import { useState, useCallback } from 'react';
-
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
@@ -10,21 +8,18 @@ import MenuList from '@mui/material/MenuList';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
-
 import { useRouter, usePathname } from 'src/routes/hooks';
-
-import { _myAccount } from 'src/_mock';
-
-
+import useFetchProfile from '../../hooks/apis/useFetchProfile';
 
 export function AccountPopover({ data = [], sx, ...other }) {
+  const { userInfo } = useFetchProfile();
   const router = useRouter();
 
   const pathname = usePathname();
 
   const [openPopover, setOpenPopover] = useState(null);
 
-  const handleOpenPopover = useCallback((event) => {
+  const handleOpenPopover = useCallback(event => {
     setOpenPopover(event.currentTarget);
   }, []);
 
@@ -33,11 +28,11 @@ export function AccountPopover({ data = [], sx, ...other }) {
   }, []);
 
   const handleClickItem = useCallback(
-    (path) => {
+    path => {
       handleClosePopover();
       router.push(path);
     },
-    [handleClosePopover, router]
+    [handleClosePopover, router],
   );
 
   return (
@@ -48,14 +43,18 @@ export function AccountPopover({ data = [], sx, ...other }) {
           p: '2px',
           width: 40,
           height: 40,
-          background: (theme) =>
+          background: theme =>
             `conic-gradient(${theme.vars.palette.primary.light}, ${theme.vars.palette.warning.light}, ${theme.vars.palette.primary.light})`,
           ...sx,
         }}
         {...other}
       >
-        <Avatar src={_myAccount.photoURL} alt={_myAccount.displayName} sx={{ width: 1, height: 1 }}>
-          {_myAccount.displayName.charAt(0).toUpperCase()}
+        <Avatar
+          src={userInfo?.avatar}
+          alt={userInfo?.name}
+          sx={{ width: 1, height: 1 }}
+        >
+          {userInfo?.name.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
@@ -73,11 +72,11 @@ export function AccountPopover({ data = [], sx, ...other }) {
       >
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {_myAccount?.displayName}
+            {userInfo?.name}
           </Typography>
 
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {_myAccount?.email}
+            {userInfo?.email || userInfo?.phoneNumber}
           </Typography>
         </Box>
 
@@ -104,7 +103,7 @@ export function AccountPopover({ data = [], sx, ...other }) {
             },
           }}
         >
-          {data.map((option) => (
+          {data.map(option => (
             <MenuItem
               key={option.label}
               selected={option.href === pathname}
