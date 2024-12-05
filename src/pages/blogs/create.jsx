@@ -34,7 +34,7 @@ export const BlogCreateAdmin = () => {
       <AdminPageHeader
         breadcrumbs={[
           { label: 'Admin', path: `/` },
-          { label: 'Blogs', path: `//blogs` },
+          { label: 'Blogs', path: `/blogs` },
           { label: 'Create New Blog', path: `/blogs/create` },
         ]}
       />

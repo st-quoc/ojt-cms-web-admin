@@ -54,7 +54,7 @@ export const ProductForm = ({ isEdit, onSubmit, defaultValues }) => {
         setColorOptions(colorResponse.data.colors);
 
         const categoryResponse = await axiosClient.get(
-          `${API_ROOT}/admin/category/list`,
+          `${API_ROOT}/admin/category/list-no-paging`,
         );
         setCategories(categoryResponse.data.categories);
       } catch (error) {
