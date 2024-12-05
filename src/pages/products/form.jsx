@@ -257,7 +257,9 @@ export const ProductForm = ({ isEdit, onSubmit, defaultValues }) => {
             <Button
               variant="outlined"
               onClick={() =>
-                navigate(`/admin/product/detail/${defaultValues.id}`)
+                isEdit
+                  ? navigate(`/product/detail/${defaultValues.id}`)
+                  : navigate('/products')
               }
             >
               Cancel

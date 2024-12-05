@@ -65,7 +65,7 @@ export const DetailProductAdmin = () => {
   }
 
   const handleEditProduct = () => {
-    navigate(`/admin/product/edit/${product.id}`, { state: { product } });
+    navigate(`/product/edit/${product.id}`, { state: { product } });
   };
 
   const groupByColor = variants => {
