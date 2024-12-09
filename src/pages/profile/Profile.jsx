@@ -16,20 +16,16 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import useFetchProfile from '../../hooks/apis/useFetchProfile';
 import { AvatarUploader } from '../../components/AvatarUploader';
 import defaultImage from '../../assets/default.png';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useChangeProfile from '../../hooks/apis/useChangeProfile';
 import { Navigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import useChangePassword from '../../hooks/apis/useChangePassword';
+import { useForm } from 'react-hook-form';
 
 export const ProfileTab = () => {
   const { userInfo, loading, error } = useFetchProfile();
-  const { changeProfile, loading: saveLoading } = useChangeProfile();
-  const {
-    changePassword,
-    loading: changeLoading,
-    error: changeError,
-  } = useChangePassword();
+  const { changeProfile } = useChangeProfile();
+  const { changePassword } = useChangePassword();
 
   const [isEdit, setIsEdit] = useState(false);
   const [openPasswordDialog, setOpenPasswordDialog] = useState(false);
@@ -44,29 +40,33 @@ export const ProfileTab = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
-  const handleEdit = () => {
-    setIsEdit(true);
-  };
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: {
+      name: '',
+      email: '',
+      address: '',
+      phone: '',
+    },
+  });
 
-  const handleCancel = () => {
-    setIsEdit(false);
-  };
+  useEffect(() => {
+    if (userInfo && !loading) {
+      reset(userInfo);
+    }
+  }, [userInfo, loading]);
 
   const handleChange = (key, value) => {
     userInfo[key] = value;
   };
 
-  const handleSave = async () => {
-    try {
-      await changeProfile(userInfo);
-      setIsEdit(false);
-    } catch (err) {
-      toast.error('An error occurred while editing profile!');
-    }
-  };
-
-  const handleOpenPasswordDialog = () => {
-    setOpenPasswordDialog(true);
+  const handleSave = async data => {
+    await changeProfile(data);
+    setIsEdit(false);
   };
 
   const handleClosePasswordDialog = () => {
@@ -74,10 +74,6 @@ export const ProfileTab = () => {
     setNewPassword('');
     setConfirmPassword('');
     setOldPassword('');
-  };
-
-  const handleOpenForgotPasswordDialog = () => {
-    setOpenForgotPasswordDialog(true);
   };
 
   const handleCloseForgotPasswordDialog = () => {
@@ -136,11 +132,11 @@ export const ProfileTab = () => {
         sx={{ mb: 2, width: '100%' }}
       >
         {!isEdit && (
-          <Button variant="contained" onClick={handleEdit}>
+          <Button variant="contained" onClick={() => setIsEdit(true)}>
             Edit Profile
           </Button>
         )}
-        <Button variant="outlined" onClick={handleOpenPasswordDialog}>
+        <Button variant="outlined" onClick={() => setOpenPasswordDialog(true)}>
           Change Password
         </Button>
       </Stack>
@@ -149,7 +145,7 @@ export const ProfileTab = () => {
           color={'error'}
           textAlign="end"
           sx={{ cursor: 'pointer', fontStyle: 'italic' }}
-          onClick={handleOpenForgotPasswordDialog}
+          onClick={() => setOpenForgotPasswordDialog(true)}
         >
           Forgot password?
         </Typography>
@@ -168,52 +164,67 @@ export const ProfileTab = () => {
               fullWidth
               disabled={!isEdit}
               label="Name"
-              value={userInfo?.name || ''}
-              onChange={e => handleChange('name', e.target.value)}
+              {...register('name', { required: 'Name is required' })}
+              error={!!errors.name}
+              helperText={errors.name?.message}
             />
             <TextField
               fullWidth
               disabled={!isEdit}
               label="Email"
-              value={userInfo?.email || ''}
-              onChange={e => handleChange('email', e.target.value)}
+              {...register('email', {
+                required: 'Email is required',
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: 'Invalid email address',
+                },
+              })}
+              error={!!errors.email}
+              helperText={errors.email?.message}
             />
             <TextField
               fullWidth
               disabled={!isEdit}
               label="Address"
-              value={userInfo?.address || ''}
-              onChange={e => handleChange('address', e.target.value)}
+              {...register('address')}
             />
             <TextField
               fullWidth
               disabled={!isEdit}
               label="Phone Number"
-              value={userInfo?.phone || ''}
-              onChange={e => handleChange('phone', e.target.value)}
+              {...register('phone', {
+                pattern: {
+                  value: /^[0-9]{10,12}$/,
+                  message: 'Invalid phone number',
+                },
+              })}
+              error={!!errors.phone}
+              helperText={errors.phone?.message}
             />
-            <Stack
-              direction="row"
-              spacing={2}
-              justifyContent={'end'}
-              alignItems={'center'}
-            >
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSave}
-                disabled={saveLoading}
+            {isEdit && (
+              <Stack
+                direction="row"
+                spacing={2}
+                justifyContent={'end'}
+                alignItems={'center'}
               >
-                {saveLoading ? 'Saving...' : 'Save'}
-              </Button>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={handleCancel}
-              >
-                Cancel
-              </Button>
-            </Stack>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSubmit(handleSave)}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Saving...' : 'Save'}
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => setIsEdit(false)}
+                >
+                  Cancel
+                </Button>
+              </Stack>
+            )}
           </Stack>
         </Stack>
       </Stack>
@@ -229,7 +240,7 @@ export const ProfileTab = () => {
                 sx={{ cursor: 'pointer', fontStyle: 'italic' }}
                 onClick={() => {
                   handleClosePasswordDialog();
-                  handleOpenForgotPasswordDialog();
+                  setOpenForgotPasswordDialog(true);
                 }}
               >
                 Forgot password?

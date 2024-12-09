@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import axiosClient from '../../config/axios';
+import { API_ROOT } from '../../constants';
 
 const useChangeProfile = () => {
   const [loading, setLoading] = useState(false);
@@ -10,7 +11,7 @@ const useChangeProfile = () => {
     setLoading(true);
     try {
       const response = await axiosClient.post(
-        '/api/user/update-profile',
+        `${API_ROOT}/auth/change-profile`,
         updatedUserInfo,
       );
 
