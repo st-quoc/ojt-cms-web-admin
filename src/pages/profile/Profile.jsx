@@ -18,10 +18,18 @@ import { AvatarUploader } from '../../components/AvatarUploader';
 import defaultImage from '../../assets/default.png';
 import { useState } from 'react';
 import useChangeProfile from '../../hooks/apis/useChangeProfile';
+import { Navigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import useChangePassword from '../../hooks/apis/useChangePassword';
 
 export const ProfileTab = () => {
   const { userInfo, loading, error } = useFetchProfile();
   const { changeProfile, loading: saveLoading } = useChangeProfile();
+  const {
+    changePassword,
+    loading: changeLoading,
+    error: changeError,
+  } = useChangePassword();
 
   const [isEdit, setIsEdit] = useState(false);
   const [openPasswordDialog, setOpenPasswordDialog] = useState(false);
@@ -34,6 +42,7 @@ export const ProfileTab = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
   const handleEdit = () => {
     setIsEdit(true);
@@ -52,7 +61,7 @@ export const ProfileTab = () => {
       await changeProfile(userInfo);
       setIsEdit(false);
     } catch (err) {
-      console.error(err);
+      toast.error('An error occurred while editing profile!');
     }
   };
 
@@ -76,12 +85,17 @@ export const ProfileTab = () => {
     setEmail('');
   };
 
-  const handleChangePassword = () => {
-    if (newPassword !== confirmPassword) {
-      alert('Passwords do not match');
-    } else {
-      alert('Password changed successfully');
+  const handleChangePassword = async () => {
+    const success = await changePassword(
+      oldPassword,
+      newPassword,
+      confirmPassword,
+    );
+    if (success) {
       handleClosePasswordDialog();
+      setNewPassword('');
+      setConfirmPassword('');
+      setOldPassword('');
     }
   };
 
@@ -110,14 +124,7 @@ export const ProfileTab = () => {
   }
 
   if (error) {
-    return (
-      <Box sx={{ p: 4, textAlign: 'center', color: 'red' }}>
-        <Typography variant="h6">Error loading profile</Typography>
-        <Typography variant="body2">
-          {error.message || 'Please try again later.'}
-        </Typography>
-      </Box>
-    );
+    return <Navigate to={'/404'} />;
   }
 
   return (
@@ -126,23 +133,9 @@ export const ProfileTab = () => {
         direction="row"
         spacing={2}
         justifyContent="end"
-        sx={{ mb: 4, width: '100%' }}
+        sx={{ mb: 2, width: '100%' }}
       >
-        {isEdit ? (
-          <>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSave}
-              disabled={saveLoading} // Disable Save while saving
-            >
-              {saveLoading ? 'Saving...' : 'Save'}
-            </Button>
-            <Button variant="outlined" color="secondary" onClick={handleCancel}>
-              Cancel
-            </Button>
-          </>
-        ) : (
+        {!isEdit && (
           <Button variant="contained" onClick={handleEdit}>
             Edit Profile
           </Button>
@@ -151,6 +144,16 @@ export const ProfileTab = () => {
           Change Password
         </Button>
       </Stack>
+      <Box sx={{ mb: 2 }}>
+        <Typography
+          color={'error'}
+          textAlign="end"
+          sx={{ cursor: 'pointer', fontStyle: 'italic' }}
+          onClick={handleOpenForgotPasswordDialog}
+        >
+          Forgot password?
+        </Typography>
+      </Box>
       <Stack spacing={4} direction={'row'}>
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <AvatarUploader
@@ -189,16 +192,28 @@ export const ProfileTab = () => {
               value={userInfo?.phone || ''}
               onChange={e => handleChange('phone', e.target.value)}
             />
-            <Box>
-              <Typography
-                color={'error'}
-                textAlign="end"
-                sx={{ cursor: 'pointer', fontStyle: 'italic' }}
-                onClick={handleOpenForgotPasswordDialog}
+            <Stack
+              direction="row"
+              spacing={2}
+              justifyContent={'end'}
+              alignItems={'center'}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSave}
+                disabled={saveLoading}
               >
-                Forgot password?
-              </Typography>
-            </Box>
+                {saveLoading ? 'Saving...' : 'Save'}
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
+            </Stack>
           </Stack>
         </Stack>
       </Stack>
@@ -265,7 +280,14 @@ export const ProfileTab = () => {
               type={showConfirmPassword ? 'text' : 'password'}
               fullWidth
               value={confirmPassword}
-              onChange={e => setConfirmPassword(e.target.value)}
+              onChange={e => {
+                setConfirmPassword(e.target.value);
+                if (confirmPasswordError) {
+                  setConfirmPasswordError(false);
+                }
+              }}
+              error={confirmPasswordError}
+              helperText={confirmPasswordError ? 'Passwords do not match' : ''}
               sx={{ mb: 2 }}
               InputProps={{
                 endAdornment: (

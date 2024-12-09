@@ -1,4 +1,11 @@
-import { Modal, Box, Typography, TextField, Button } from '@mui/material';
+import {
+  Modal,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Stack,
+} from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import axiosClient from '../../config/axios';
@@ -81,9 +88,18 @@ const ModalCreateSize = ({ open, onClose, onCreate, initialValues }) => {
             )}
           />
 
-          <Button type="submit" variant="contained" color="primary" fullWidth>
-            {initialValues ? 'Update Size' : 'Create Size'}
-          </Button>
+          <Stack direction={'row'} spacing={2}>
+            <Button type="submit" variant="contained" color="primary">
+              {initialValues ? 'Update' : 'Create'}
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => onClose()}
+            >
+              Cancel
+            </Button>
+          </Stack>
         </form>
       </Box>
     </Modal>
