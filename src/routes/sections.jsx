@@ -29,6 +29,7 @@ import { ProfileAdmin } from '../pages/profile';
 import BlogCreateAdmin from '../pages/blogs/create';
 import { BlogEditAdmin } from '../pages/blogs/edit';
 import { BlogDetailAdmin } from '../pages/blogs/detail';
+import { CircularProgress } from '@mui/material';
 
 const renderFallback = (
   <Box
@@ -62,7 +63,7 @@ const RequirePermission = ({ permissions, children }) => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <CircularProgress sx={{ display: 'block', margin: '20px auto' }} />;
   }
 
   const hasPermission = permissions.every(permission =>
@@ -75,16 +76,36 @@ const RequirePermission = ({ permissions, children }) => {
 
   return children;
 };
+const RequireAuth = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
+
+  useEffect(() => {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    setIsAuthenticated(!!userInfo);
+  }, []);
+
+  if (isAuthenticated === null) {
+    return <CircularProgress sx={{ display: 'block', margin: '20px auto' }} />;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
 
 export function Router() {
   return useRoutes([
     {
       element: (
-        <DashboardLayout>
-          <Suspense fallback={renderFallback}>
-            <Outlet />
-          </Suspense>
-        </DashboardLayout>
+        <RequireAuth>
+          <DashboardLayout>
+            <Suspense fallback={renderFallback}>
+              <Outlet />
+            </Suspense>
+          </DashboardLayout>
+        </RequireAuth>
       ),
       children: [
         { element: <Dashboard />, index: true },
