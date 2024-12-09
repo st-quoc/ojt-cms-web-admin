@@ -6,8 +6,11 @@ import ManagerForm from './form';
 import { Divider, Typography } from '@mui/material';
 import { API_ROOT } from '../../constants';
 import axiosClient from '../../config/axios';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const CreateManager = () => {
+  const navigate = useNavigate();
   const initialValues = {
     name: '',
     email: '',
@@ -17,7 +20,13 @@ const CreateManager = () => {
   };
 
   const handleCreate = async values => {
-    await axiosClient.post(`${API_ROOT}/admin/manager/create`, values);
+    try {
+      await axiosClient.post(`${API_ROOT}/admin/manager/create`, values);
+      navigate('/managers');
+      toast.success('Manager created succsessfully!');
+    } catch (error) {
+      toast.success('Manager creating failed!');
+    }
   };
 
   return (

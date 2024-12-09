@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import LinearProgress, {
@@ -28,6 +28,7 @@ import EditTier from '../pages/tiers/edit';
 import { ProfileAdmin } from '../pages/profile';
 import BlogCreateAdmin from '../pages/blogs/create';
 import { BlogEditAdmin } from '../pages/blogs/edit';
+import { BlogDetailAdmin } from '../pages/blogs/detail';
 
 const renderFallback = (
   <Box
@@ -48,6 +49,33 @@ const renderFallback = (
   </Box>
 );
 
+const RequirePermission = ({ permissions, children }) => {
+  const [userPermissions, setUserPermissions] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    if (userInfo && userInfo.permissions) {
+      setUserPermissions(userInfo.permissions);
+    }
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  const hasPermission = permissions.every(permission =>
+    userPermissions.includes(permission),
+  );
+
+  if (!hasPermission) {
+    return <Navigate to="/access-denied" replace />;
+  }
+
+  return children;
+};
+
 export function Router() {
   return useRoutes([
     {
@@ -61,37 +89,230 @@ export function Router() {
       children: [
         { element: <Dashboard />, index: true },
 
-        { path: 'products', element: <ProductsListAdmin /> },
-        { path: 'product/create', element: <ProductCreateAdmin /> },
-        { path: 'product/detail/:id', element: <DetailProductAdmin /> },
-        { path: 'product/edit/:id', element: <ProductEditAdmin /> },
+        {
+          path: 'products',
+          element: (
+            <RequirePermission
+              permissions={['view_product', 'manager_product']}
+            >
+              <ProductsListAdmin />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'product/create',
+          element: (
+            <RequirePermission
+              permissions={['view_product', 'manager_product']}
+            >
+              <ProductCreateAdmin />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'product/detail/:id',
+          element: (
+            <RequirePermission
+              permissions={['view_product', 'manager_product']}
+            >
+              <DetailProductAdmin />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'product/edit/:id',
+          element: (
+            <RequirePermission
+              permissions={['view_product', 'manager_product']}
+            >
+              <ProductEditAdmin />
+            </RequirePermission>
+          ),
+        },
 
-        { path: 'variants', element: <VariantsPage /> },
+        {
+          path: 'variants',
+          element: (
+            <RequirePermission
+              permissions={['view_variant', 'manager_variant']}
+            >
+              <VariantsPage />
+            </RequirePermission>
+          ),
+        },
 
-        { path: 'blogs', element: <BlogsListAdmin /> },
-        { path: 'blogs/create', element: <BlogCreateAdmin /> },
-        { path: 'blogs/detail/:id', element: <BlogEditAdmin /> },
-        { path: 'blogs/edit/:id', element: <BlogEditAdmin /> },
+        {
+          path: 'blogs',
+          element: (
+            <RequirePermission permissions={['view_blog', 'manager_blog']}>
+              <BlogsListAdmin />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'blogs/create',
+          element: (
+            <RequirePermission permissions={['view_blog', 'manager_blog']}>
+              <BlogCreateAdmin />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'blogs/detail/:id',
+          element: (
+            <RequirePermission permissions={['view_blog', 'manager_blog']}>
+              <BlogDetailAdmin />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'blogs/edit/:id',
+          element: (
+            <RequirePermission permissions={['view_blog', 'manager_blog']}>
+              <BlogEditAdmin />
+            </RequirePermission>
+          ),
+        },
 
-        { path: 'managers', element: <ManagersListAdmin /> },
-        { path: 'managers/create', element: <CreateManager /> },
-        { path: 'managers/detail/:id', element: <BlogsListAdmin /> },
-        { path: 'managers/edit/:id', element: <EditManager /> },
+        {
+          path: 'managers',
+          element: (
+            <RequirePermission
+              permissions={['view_manager', 'manager_manager']}
+            >
+              <ManagersListAdmin />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'managers/create',
+          element: (
+            <RequirePermission
+              permissions={['view_manager', 'manager_manager']}
+            >
+              <CreateManager />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'managers/detail/:id',
+          element: (
+            <RequirePermission
+              permissions={['view_manager', 'manager_manager']}
+            >
+              <BlogsListAdmin />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'managers/edit/:id',
+          element: (
+            <RequirePermission
+              permissions={['view_manager', 'manager_manager']}
+            >
+              <EditManager />
+            </RequirePermission>
+          ),
+        },
 
-        { path: 'users', element: <UsersListAdmin /> },
-        { path: 'users/create', element: <CreateUser /> },
-        { path: 'users/detail/:id', element: <BlogsListAdmin /> },
-        { path: 'users/edit/:id', element: <EditUser /> },
+        {
+          path: 'users',
+          element: (
+            <RequirePermission permissions={['view_user', 'manager_user']}>
+              <UsersListAdmin />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'users/create',
+          element: (
+            <RequirePermission permissions={['view_user', 'manager_user']}>
+              <CreateUser />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'users/detail/:id',
+          element: (
+            <RequirePermission permissions={['view_user', 'manager_user']}>
+              <BlogsListAdmin />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'users/edit/:id',
+          element: (
+            <RequirePermission permissions={['view_user', 'manager_user']}>
+              <EditUser />
+            </RequirePermission>
+          ),
+        },
 
-        { path: 'tiers', element: <TiersListAdmin /> },
-        { path: 'tiers/create', element: <CreateTier /> },
-        { path: 'tiers/detail/:id', element: <BlogsListAdmin /> },
-        { path: 'tiers/edit/:id', element: <EditTier /> },
+        {
+          path: 'tiers',
+          element: (
+            <RequirePermission permissions={['view_tier', 'manager_tier']}>
+              <TiersListAdmin />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'tiers/create',
+          element: (
+            <RequirePermission permissions={['view_tier', 'manager_tier']}>
+              <CreateTier />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'tiers/detail/:id',
+          element: (
+            <RequirePermission permissions={['view_tier', 'manager_tier']}>
+              <BlogsListAdmin />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'tiers/edit/:id',
+          element: (
+            <RequirePermission permissions={['view_tier', 'manager_tier']}>
+              <EditTier />
+            </RequirePermission>
+          ),
+        },
 
-        { path: 'promotions/list/', element: <EditTier /> },
-        { path: 'promotions/create', element: <EditTier /> },
-        { path: 'promotions/detail/:id', element: <EditTier /> },
-        { path: 'promotions/edit/:id', element: <EditTier /> },
+        {
+          path: 'promotions/list/',
+          element: (
+            <RequirePermission permissions={['manage_promotions']}>
+              <EditTier />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'promotions/create',
+          element: (
+            <RequirePermission permissions={['manage_promotions']}>
+              <EditTier />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'promotions/detail/:id',
+          element: (
+            <RequirePermission permissions={['manage_promotions']}>
+              <EditTier />
+            </RequirePermission>
+          ),
+        },
+        {
+          path: 'promotions/edit/:id',
+          element: (
+            <RequirePermission permissions={['manage_promotions']}>
+              <EditTier />
+            </RequirePermission>
+          ),
+        },
 
         { path: 'profile', element: <ProfileAdmin /> },
       ],

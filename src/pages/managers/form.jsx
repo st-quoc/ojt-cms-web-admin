@@ -29,7 +29,7 @@ const ManagerForm = ({ initialValues, isEdit, onSubmit }) => {
   });
 
   const [search, setSearch] = useState('');
-  const { permissions, loading, error } = useFetchPermissions({ search });
+  const { permissions, loading, error } = useFetchPermissions(search);
 
   const selectedPermissions = watch('permissions', []);
 
@@ -125,7 +125,6 @@ const ManagerForm = ({ initialValues, isEdit, onSubmit }) => {
             <TextField
               fullWidth
               label="Search permissions"
-              value={search}
               size="small"
               onChange={handleSearchChange}
               margin="normal"
@@ -146,42 +145,35 @@ const ManagerForm = ({ initialValues, isEdit, onSubmit }) => {
                   ) : (
                     <FormGroup>
                       <Grid container spacing={2} sx={{ py: 2, px: 4 }}>
-                        {permissions
-                          .map(permission => (
-                            <Grid
-                              item
-                              xs={4}
-                              sm={4}
-                              md={4}
-                              key={permission._id}
-                            >
-                              <FormControlLabel
-                                control={
-                                  <Checkbox
-                                    checked={selectedPermissions.includes(
-                                      permission._id,
-                                    )}
-                                    onChange={e => {
-                                      const isChecked = e.target.checked;
-                                      if (isChecked) {
-                                        field.onChange([
-                                          ...field.value,
-                                          permission._id,
-                                        ]);
-                                      } else {
-                                        field.onChange(
-                                          field.value.filter(
-                                            v => v !== permission._id,
-                                          ),
-                                        );
-                                      }
-                                    }}
-                                  />
-                                }
-                                label={permission.description}
-                              />
-                            </Grid>
-                          ))}
+                        {permissions.map(permission => (
+                          <Grid item xs={4} sm={4} md={4} key={permission._id}>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={selectedPermissions.includes(
+                                    permission._id,
+                                  )}
+                                  onChange={e => {
+                                    const isChecked = e.target.checked;
+                                    if (isChecked) {
+                                      field.onChange([
+                                        ...field.value,
+                                        permission._id,
+                                      ]);
+                                    } else {
+                                      field.onChange(
+                                        field.value.filter(
+                                          v => v !== permission._id,
+                                        ),
+                                      );
+                                    }
+                                  }}
+                                />
+                              }
+                              label={permission.description}
+                            />
+                          </Grid>
+                        ))}
                       </Grid>
                     </FormGroup>
                   )}

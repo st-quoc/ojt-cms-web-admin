@@ -10,6 +10,7 @@ import { RouterLink } from 'src/routes/components';
 import { varAlpha } from 'src/theme/styles';
 import { Logo } from 'src/components/logo';
 import { Scrollbar } from 'src/components/scrollbar';
+import { useLocation } from 'react-router-dom';
 
 export function NavDesktop({ sx, data, slots, layoutQuery }) {
   const theme = useTheme();
@@ -47,7 +48,6 @@ export function NavMobile({ sx, data, open, slots, onClose }) {
     if (open) {
       onClose();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   return (
@@ -71,7 +71,10 @@ export function NavMobile({ sx, data, open, slots, onClose }) {
 }
 
 export function NavContent({ data, slots, sx }) {
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
+
+  const userPermissions =
+    JSON.parse(localStorage.getItem('userInfo'))?.permissions || [];
 
   return (
     <>
@@ -89,46 +92,53 @@ export function NavContent({ data, slots, sx }) {
         >
           <Box component="ul" gap={0.5} display="flex" flexDirection="column">
             {data.map(item => {
-              const isActived = item.path === pathname;
+              if (
+                item.permission.includes('all') ||
+                item.permission.some(p => userPermissions.includes(p))
+              ) {
+                const isActived = item.path === pathname;
 
-              return (
-                <ListItem disableGutters disablePadding key={item.title}>
-                  <ListItemButton
-                    disableGutters
-                    component={RouterLink}
-                    href={item.path}
-                    sx={{
-                      pl: 2,
-                      py: 1,
-                      gap: 2,
-                      pr: 1.5,
-                      borderRadius: 0.75,
-                      typography: 'body2',
-                      fontWeight: 'fontWeightMedium',
-                      color: 'var(--layout-nav-item-color)',
-                      minHeight: 'var(--layout-nav-item-height)',
-                      ...(isActived && {
-                        fontWeight: 'fontWeightSemiBold',
-                        bgcolor: 'var(--layout-nav-item-active-bg)',
-                        color: 'var(--layout-nav-item-active-color)',
-                        '&:hover': {
-                          bgcolor: 'var(--layout-nav-item-hover-bg)',
-                        },
-                      }),
-                    }}
-                  >
-                    <Box component="span" sx={{ width: 24, height: 24 }}>
-                      {item.icon}
-                    </Box>
+                return (
+                  <ListItem disableGutters disablePadding key={item.title}>
+                    <ListItemButton
+                      disableGutters
+                      component={RouterLink}
+                      href={item.path}
+                      sx={{
+                        pl: 2,
+                        py: 1,
+                        gap: 2,
+                        pr: 1.5,
+                        borderRadius: 0.75,
+                        typography: 'body2',
+                        fontWeight: 'fontWeightMedium',
+                        color: 'var(--layout-nav-item-color)',
+                        minHeight: 'var(--layout-nav-item-height)',
+                        ...(isActived && {
+                          fontWeight: 'fontWeightSemiBold',
+                          bgcolor: 'var(--layout-nav-item-active-bg)',
+                          color: 'var(--layout-nav-item-active-color)',
+                          '&:hover': {
+                            bgcolor: 'var(--layout-nav-item-hover-bg)',
+                          },
+                        }),
+                      }}
+                    >
+                      <Box component="span" sx={{ width: 24, height: 24 }}>
+                        {item.icon}
+                      </Box>
 
-                    <Box component="span" flexGrow={1}>
-                      {item.title}
-                    </Box>
+                      <Box component="span" flexGrow={1}>
+                        {item.title}
+                      </Box>
 
-                    {item.info && item.info}
-                  </ListItemButton>
-                </ListItem>
-              );
+                      {item.info && item.info}
+                    </ListItemButton>
+                  </ListItem>
+                );
+              }
+
+              return null;
             })}
           </Box>
         </Box>
