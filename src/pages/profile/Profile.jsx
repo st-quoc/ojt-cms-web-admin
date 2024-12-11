@@ -21,6 +21,9 @@ import useChangeProfile from '../../hooks/apis/useChangeProfile';
 import { Navigate } from 'react-router-dom';
 import useChangePassword from '../../hooks/apis/useChangePassword';
 import { useForm } from 'react-hook-form';
+import axiosClient from '../../config/axios';
+import { API_ROOT } from '../../constants';
+import { toast } from 'react-toastify';
 
 export const ProfileTab = () => {
   const { userInfo, loading, error } = useFetchProfile();
@@ -83,6 +86,7 @@ export const ProfileTab = () => {
 
   const handleChangePassword = async () => {
     const success = await changePassword(
+      userInfo.email,
       oldPassword,
       newPassword,
       confirmPassword,
@@ -95,12 +99,13 @@ export const ProfileTab = () => {
     }
   };
 
-  const handleForgotPassword = () => {
-    if (!email) {
-      alert('Please enter your email');
-    } else {
-      alert(`Password reset instructions sent to ${email}`);
-      handleCloseForgotPasswordDialog();
+  const handleForgotPassword = async () => {
+    try {
+      await axiosClient.post(`${API_ROOT}/auth/forgot-password`, { email });
+
+      toast.success('Please check your email to reset password!');
+    } catch (err) {
+      toast.error('Failed to request reset password');
     }
   };
 

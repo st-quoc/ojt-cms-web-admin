@@ -7,7 +7,12 @@ const useChangePassword = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const changePassword = async (oldPassword, newPassword, confirmPassword) => {
+  const changePassword = async (
+    email,
+    oldPassword,
+    newPassword,
+    confirmPassword,
+  ) => {
     if (newPassword !== confirmPassword) {
       setError('Passwords do not match');
       toast.error('Passwords do not match');
@@ -18,10 +23,14 @@ const useChangePassword = () => {
       setLoading(true);
       setError(null);
 
-      const response = await axiosClient.post(`${API_ROOT}/auth/change-password`, {
-        oldPassword,
-        newPassword,
-      });
+      const response = await axiosClient.post(
+        `${API_ROOT}/auth/change-password`,
+        {
+          email,
+          oldPassword,
+          newPassword,
+        },
+      );
 
       if (response.status === 200) {
         toast.success('Password changed successfully');

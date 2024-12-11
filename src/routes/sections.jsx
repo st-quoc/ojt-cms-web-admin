@@ -32,6 +32,7 @@ import { BlogDetailAdmin } from '../pages/blogs/detail';
 import { CircularProgress } from '@mui/material';
 import OrderList from '../pages/order/orderList';
 import NoAccessPage from '../pages/NoAccessPage';
+import ResetPassword from '../pages/reset-password';
 
 const renderFallback = (
   <Box
@@ -369,6 +370,10 @@ export function Router() {
     {
       path: 'access-denied',
       element: <NoAccessPage />,
+    },
+    {
+      path: 'reset-password/:token',
+      element: <ResetPassword/>,
     },
     {
       path: '*',
