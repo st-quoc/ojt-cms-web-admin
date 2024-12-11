@@ -10,9 +10,16 @@ import {
   FormControl,
   Box,
   Stack,
+  DialogActions,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import axiosClient from '../../config/axios';
+import { toast } from 'react-toastify';
+import { API_ROOT } from '../../constants';
 
 const UserForm = ({ initialValues, isEdit, onSubmit }) => {
   const navigate = useNavigate();
@@ -21,12 +28,46 @@ const UserForm = ({ initialValues, isEdit, onSubmit }) => {
     mode: 'onBlur',
   });
 
+  const [openResetDialog, setOpenResetDialog] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
   useEffect(() => {
     reset(initialValues);
   }, [initialValues, reset]);
 
   const handleCancel = () => {
     navigate('/users');
+  };
+
+  const handleOpenResetDialog = () => {
+    setOpenResetDialog(true);
+  };
+
+  const handleCloseResetDialog = () => {
+    setOpenResetDialog(false);
+    setNewPassword('');
+    setConfirmPassword('');
+    setPasswordError('');
+  };
+
+  const handleResetPassword = async () => {
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Passwords don't match");
+      return;
+    }
+
+    try {
+      await axiosClient.post(`${API_ROOT}/auth/reset-pass-for-user`, {
+        userId: initialValues.id,
+        newPassword,
+      });
+      toast.success('Reset password succsessfully');
+    } catch (error) {
+      toast.error('Reset password failed!');
+    }
+    handleCloseResetDialog();
   };
 
   return (
@@ -85,6 +126,15 @@ const UserForm = ({ initialValues, isEdit, onSubmit }) => {
                 />
               )}
             />
+            <Box sx={{ mt: 2 }}>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleOpenResetDialog}
+              >
+                Reset Password
+              </Button>
+            </Box>
             <Controller
               name="status"
               control={control}
@@ -115,6 +165,40 @@ const UserForm = ({ initialValues, isEdit, onSubmit }) => {
           </Button>
         </Stack>
       </form>
+      <Dialog open={openResetDialog} onClose={handleCloseResetDialog}>
+        <DialogTitle>Reset Password</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            label="New Password"
+            type="password"
+            value={newPassword}
+            onChange={e => setNewPassword(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="Confirm Password"
+            type="password"
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          {passwordError && (
+            <Typography color="error" variant="caption">
+              {passwordError}
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseResetDialog} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleResetPassword} color="primary">
+            Reset
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

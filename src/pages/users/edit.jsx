@@ -21,12 +21,7 @@ const EditUser = () => {
         const response = await axiosClient.get(
           `${API_ROOT}/admin/user/detail/${id}`,
         );
-        setInitialValues({
-          name: response.data.user.name,
-          phoneNumber: response.data.user.phoneNumber,
-          email: response.data.user.email,
-          status: response.data.user.status,
-        });
+        setInitialValues(response.data.user);
       } catch (error) {
         console.error('Failed to fetch user:', error);
       }
