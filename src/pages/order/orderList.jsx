@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -15,153 +14,149 @@ import {
   Pagination,
   Typography,
   Stack,
+  TablePagination,
+  CircularProgress,
 } from '@mui/material';
+import useOrders from '../../hooks/apis/useOrders';
+import useFetchOrders from '../../hooks/apis/useOrders';
+import { Helmet } from 'react-helmet-async';
+import { DashboardContent } from '../../layouts/dashboard/main';
+import { AdminPageHeader } from '../../components/AdminPageHeader';
+import { CONFIG } from '../../config-global';
+import { ProductsFilter } from '../products/filter';
+import { OrdersFilter } from './filters';
 
 const OrderList = () => {
-  const [orders, setOrders] = useState([]);
-  const [statusFilter, setStatusFilter] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [filters, setFilters] = useState({
+    search: '',
+    status: null,
+    startDate: null,
+    endDate: null,
+  });
 
-  const ORDERS_PER_PAGE = 10;
-
-  const fetchOrders = async () => {
-    try {
-      const response = await axios.get('http://localhost:8017/v1/admin/orders');
-      const filteredOrders = statusFilter
-        ? response.data.filter(order => order.orderStatus === statusFilter)
-        : response.data;
-
-      setOrders(
-        filteredOrders.slice(
-          (currentPage - 1) * ORDERS_PER_PAGE,
-          currentPage * ORDERS_PER_PAGE,
-        ),
-      );
-      setTotalPages(Math.ceil(filteredOrders.length / ORDERS_PER_PAGE));
-    } catch (error) {
-      console.error('Error fetching orders:', error);
-    }
+  const { orders, totalOrders, loading, error, fetchOrders } = useFetchOrders(
+    page,
+    rowsPerPage,
+    filters,
+  );
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
   };
 
-  const updateOrderStatus = async (orderId, newStatus) => {
-    try {
-      const response = await axios.put(
-        `http://localhost:8017/v1/admin/orders/${orderId}`,
-        {
-          orderStatus: newStatus,
-        },
-      );
-      setOrders(prevOrders =>
-        prevOrders.map(order =>
-          order._id === orderId ? response.data : order,
-        ),
-      );
-    } catch (error) {
-      console.error('Error updating order status:', error);
-    }
+  const handleChangeRowsPerPage = event => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
   };
-
-  const handleFilterChange = status => {
-    setStatusFilter(status);
-    setCurrentPage(1);
-  };
-
-  const handlePageChange = (event, page) => {
-    setCurrentPage(page);
-  };
-
-  useEffect(() => {
-    fetchOrders();
-  }, [statusFilter, currentPage]);
 
   return (
-    <Box
-      sx={{ padding: '2rem', backgroundColor: '#f9f9f9', minHeight: '100vh' }}
-    >
-      <Typography
-        variant="h4"
-        sx={{ marginBottom: '2rem', fontWeight: 'bold', color: '#333' }}
-      >
-        Order Management
-      </Typography>
-      <Stack direction="row" spacing={2} sx={{ marginBottom: '1.5rem' }}>
-        <Button
-          variant={statusFilter === '' ? 'contained' : 'outlined'}
-          onClick={() => handleFilterChange('')}
-        >
-          All
-        </Button>
-        {['processing', 'shipped', 'delivered', 'cancelled'].map(status => (
-          <Button
-            key={status}
-            variant={statusFilter === status ? 'contained' : 'outlined'}
-            onClick={() => handleFilterChange(status)}
-          >
-            {status.charAt(0).toUpperCase() + status.slice(1)}
-          </Button>
-        ))}
-      </Stack>
-      <TableContainer component={Paper} sx={{ boxShadow: 3 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Order Day</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>User</TableCell>
-              <TableCell>Total Price</TableCell>
-              <TableCell>Order Status</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orders
-              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-              .map(order => (
-                <TableRow key={order._id} hover>
-                  <TableCell>
-                    {new Date(order.createdAt).toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric',
-                    })}
-                  </TableCell>
-                  <TableCell>{order.phoneNumber}</TableCell>
-                  <TableCell>{order.user?.name || 'N/A'}</TableCell>
-                  <TableCell>{order.totalPrice}</TableCell>
-                  <TableCell>{order.orderStatus}</TableCell>
-                  <TableCell>
-                    <Select
-                      value={order.orderStatus}
-                      onChange={e =>
-                        updateOrderStatus(order._id, e.target.value)
-                      }
-                      size="small"
-                      sx={{ minWidth: 120 }}
-                    >
-                      <MenuItem value="processing">Processing</MenuItem>
-                      <MenuItem value="shipped">Shipped</MenuItem>
-                      <MenuItem value="delivered">Delivered</MenuItem>
-                      <MenuItem value="cancelled">Cancelled</MenuItem>
-                    </Select>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Box
-        sx={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}
-      >
-        <Pagination
-          count={totalPages}
-          page={currentPage}
-          onChange={handlePageChange}
-          color="primary"
+    <>
+      <Helmet>
+        <title> {`${CONFIG.appName} - Orders list management `}</title>
+      </Helmet>
+      <DashboardContent>
+        <AdminPageHeader
+          breadcrumbs={[
+            { label: 'Admin', path: '/' },
+            { label: 'Products', path: '/products' },
+          ]}
+          buttons={[
+            {
+              label: 'Add Product',
+              onClick: () => navigate('/product/create'),
+              variant: 'contained',
+              color: 'primary',
+            },
+          ]}
         />
-      </Box>
-    </Box>
+        <Box sx={{ my: 3 }}>
+          <OrdersFilter filters={filters} setFilters={setFilters} />
+        </Box>
+        {loading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="200px"
+          >
+            <CircularProgress />
+          </Box>
+        ) : error ? (
+          <Navigate to="/404" />
+        ) : (
+          <>
+            {orders.length === 0 ? (
+              <Typography variant="h6" color="textSecondary" align="center">
+                No products available.
+              </Typography>
+            ) : (
+              <>
+                <TableContainer component={Paper} sx={{ boxShadow: 3 }}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Order Day</TableCell>
+                        <TableCell>Phone</TableCell>
+                        <TableCell>User</TableCell>
+                        <TableCell>Total Price</TableCell>
+                        <TableCell>Order Status</TableCell>
+                        <TableCell>Actions</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {orders.map(order => (
+                        <TableRow key={order._id} hover>
+                          <TableCell>
+                            {new Date(order.createdAt).toLocaleDateString(
+                              'en-US',
+                              {
+                                weekday: 'long',
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                              },
+                            )}
+                          </TableCell>
+                          <TableCell>{order.phoneNumber}</TableCell>
+                          <TableCell>{order.user?.name || 'N/A'}</TableCell>
+                          <TableCell>{order.totalPrice}</TableCell>
+                          <TableCell>{order.orderStatus}</TableCell>
+                          <TableCell>
+                            <Select
+                              value={order.orderStatus}
+                              onChange={e =>
+                                updateOrderStatus(order._id, e.target.value)
+                              }
+                              size="small"
+                              sx={{ minWidth: 120 }}
+                            >
+                              <MenuItem value="processing">Processing</MenuItem>
+                              <MenuItem value="shipped">Shipped</MenuItem>
+                              <MenuItem value="delivered">Delivered</MenuItem>
+                              <MenuItem value="cancelled">Cancelled</MenuItem>
+                            </Select>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[10, 25, 100]}
+                  component="div"
+                  count={totalOrders}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </>
+            )}
+          </>
+        )}
+      </DashboardContent>
+    </>
   );
 };
 

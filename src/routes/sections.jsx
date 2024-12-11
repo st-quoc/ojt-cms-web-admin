@@ -110,13 +110,11 @@ export function Router() {
       ),
       children: [
         { element: <Dashboard />, index: true },
-        
+
         {
           path: 'orderList',
           element: (
-            <RequirePermission
-              permissions={['view_product', 'manager_product']|| null}
-            >
+            <RequirePermission permissions={['view_order', 'manager_order']}>
               <OrderList />
             </RequirePermission>
           ),
