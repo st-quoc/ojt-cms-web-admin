@@ -29,7 +29,7 @@ const useFetchBlogs = (page, rowsPerPage, search) => {
 
   useEffect(() => {
     fetchBlogs();
-  }, []);
+  }, [page, rowsPerPage, search]);
 
   return { blogs, loading, error, totalItems, fetchBlogs };
 };
