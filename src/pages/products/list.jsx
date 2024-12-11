@@ -10,7 +10,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import IconButton from '@mui/material/IconButton';
 import { ProductsFilter } from './filter';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import {
   Typography,
   CircularProgress,
@@ -223,14 +223,7 @@ const ProductsListAdmin = () => {
             <CircularProgress />
           </Box>
         ) : error ? (
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="200px"
-          >
-            <Alert severity="error">{error}</Alert>
-          </Box>
+          <Navigate to="/404" />
         ) : (
           <>
             {products.length === 0 ? (

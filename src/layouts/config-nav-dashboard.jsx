@@ -34,6 +34,12 @@ export const navData = [
     permission: ['view_tier', 'manager_tier'],
   },
   {
+    title: 'Order List',
+    path: '/orderList',
+    icon: icon('ic-cart'),
+    permission: ['all'],
+  },
+  {
     title: 'Blogs',
     path: '/blogs',
     icon: icon('ic-blog'),
