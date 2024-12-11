@@ -11,7 +11,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import ToggleOnIcon from '@mui/icons-material/ToggleOn';
 import { AdminPageHeader } from '../../components/AdminPageHeader';
 import { CONFIG } from '../../config-global';
@@ -19,6 +18,7 @@ import { Helmet } from 'react-helmet-async';
 import { DashboardContent } from '../../layouts/dashboard/main';
 import { Box, Chip } from '@mui/material';
 import { updateManagerStatus } from '../../apis/user';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Dialog,
   DialogActions,
@@ -29,6 +29,10 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import useFetchManagers from '../../hooks/apis/useFetchManagers';
+import { toast } from 'react-toastify';
+import { API_ROOT } from '../../constants';
+import axiosClient from '../../config/axios';
+import ConfirmDeleteModal from '../../components/ModalConfirmDelete';
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -47,6 +51,8 @@ export const ManagersListAdmin = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedManagerId, setSelectedManagerId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState('');
+  const [isModalOpenDel, setModalOpenDel] = useState(false);
+  const [itemDel, setItemDel] = useState(null);
 
   const { managers, loading, totalItems, fetchManagers } = useFetchManagers(
     page,
@@ -67,6 +73,23 @@ export const ManagersListAdmin = () => {
     setSearch(event.target.value);
     setPage(0);
   };
+  const handleOpenModalDel = id => {
+    setItemDel(id);
+    setModalOpenDel(true);
+  };
+  const handleCloseModalDel = () => setModalOpenDel(false);
+
+  const handleConfirmDel = async () => {
+    try {
+      await axiosClient.delete(`${API_ROOT}/admin/manager/delete/${itemDel}`);
+      setItemDel(null);
+      fetchManagers();
+      toast.success('Deleted manager succsessfully!');
+    } catch (error) {
+      toast.error('Delete manager failed!');
+    }
+    handleCloseModalDel();
+  };
 
   const handleChangeStatusClick = (managerId, currentStatus) => {
     setSelectedManagerId(managerId);
@@ -79,8 +102,9 @@ export const ManagersListAdmin = () => {
       await updateManagerStatus(selectedManagerId, { status: selectedStatus });
       fetchManagers();
       setOpenDialog(false);
+      toast.success('Change status managers successfully');
     } catch (error) {
-      console.error('Failed to update manager status:', error);
+      toast.error('Failed to update manager status:');
     }
   };
 
@@ -104,6 +128,11 @@ export const ManagersListAdmin = () => {
 
   return (
     <>
+      <ConfirmDeleteModal
+        open={isModalOpenDel}
+        onConfirm={handleConfirmDel}
+        onCancel={handleCloseModalDel}
+      />
       <Helmet>
         <title>{`${CONFIG.appName} - Manager List`}</title>
       </Helmet>
@@ -167,12 +196,6 @@ export const ManagersListAdmin = () => {
                             </IconButton>
                           </Tooltip>
 
-                          <Tooltip title="View Details">
-                            <IconButton>
-                              <VisibilityIcon color="secondary" />
-                            </IconButton>
-                          </Tooltip>
-
                           <Tooltip title="Change Status">
                             <IconButton
                               onClick={() =>
@@ -183,6 +206,14 @@ export const ManagersListAdmin = () => {
                               }
                             >
                               <ToggleOnIcon color="success" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Delete">
+                            <IconButton
+                              color="error"
+                              onClick={() => handleOpenModalDel(manager._id)}
+                            >
+                              <DeleteIcon />
                             </IconButton>
                           </Tooltip>
                         </TableCell>

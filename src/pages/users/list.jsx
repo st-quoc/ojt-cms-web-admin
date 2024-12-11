@@ -11,7 +11,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import ToggleOnIcon from '@mui/icons-material/ToggleOn';
 import { AdminPageHeader } from '../../components/AdminPageHeader';
 import { CONFIG } from '../../config-global';
@@ -28,6 +27,11 @@ import {
   Tooltip,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { API_ROOT } from '../../constants';
+import axiosClient from '../../config/axios';
+import ConfirmDeleteModal from '../../components/ModalConfirmDelete';
 
 const headCells = [
   { id: 'name', label: 'Name' },
@@ -50,20 +54,23 @@ export const UsersListAdmin = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState('');
+  const [isModalOpenDel, setModalOpenDel] = useState(false);
+  const [itemDel, setItemDel] = useState(null);
+
+  const loadUsers = async () => {
+    setLoading(true);
+    try {
+      const data = await fetchUsers(page, rowsPerPage, search);
+      setUsers(data.users);
+      setTotalCount(data.total);
+    } catch (error) {
+      console.error('Failed to fetch users:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadUsers = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchUsers(page, rowsPerPage, search);
-        setUsers(data.users);
-        setTotalCount(data.total);
-      } catch (error) {
-        console.error('Failed to fetch users:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     loadUsers();
   }, [page, rowsPerPage, search]);
 
@@ -87,6 +94,24 @@ export const UsersListAdmin = () => {
     setOpenDialog(true);
   };
 
+  const handleOpenModalDel = id => {
+    setItemDel(id);
+    setModalOpenDel(true);
+  };
+  const handleCloseModalDel = () => setModalOpenDel(false);
+
+  const handleConfirmDel = async () => {
+    try {
+      await axiosClient.delete(`${API_ROOT}/admin/user/delete/${itemDel}`);
+      setItemDel(null);
+      loadUsers();
+      toast.success('Deleted user succsessfully!');
+    } catch (error) {
+      toast.error('Delete user failed!');
+    }
+    handleCloseModalDel();
+  };
+
   const handleConfirmChangeStatus = async () => {
     try {
       await updateUserStatus(selectedUserId, { status: selectedStatus });
@@ -94,8 +119,9 @@ export const UsersListAdmin = () => {
       setUsers(data.users);
       setTotalCount(data.total);
       setOpenDialog(false);
+      toast.success('Change status user successfully');
     } catch (error) {
-      console.error('Failed to update user status:', error);
+      toast.error('Failed to update user status:', error);
     }
   };
 
@@ -119,6 +145,11 @@ export const UsersListAdmin = () => {
 
   return (
     <>
+      <ConfirmDeleteModal
+        open={isModalOpenDel}
+        onConfirm={handleConfirmDel}
+        onCancel={handleCloseModalDel}
+      />
       <Helmet>
         <title>{`${CONFIG.appName} - Users List`}</title>
       </Helmet>
@@ -182,13 +213,6 @@ export const UsersListAdmin = () => {
                               <EditIcon color="primary" />
                             </IconButton>
                           </Tooltip>
-
-                          <Tooltip title="View Details">
-                            <IconButton>
-                              <VisibilityIcon color="secondary" />
-                            </IconButton>
-                          </Tooltip>
-
                           <Tooltip title="Change Status">
                             <IconButton
                               onClick={() =>
@@ -196,6 +220,14 @@ export const UsersListAdmin = () => {
                               }
                             >
                               <ToggleOnIcon color="success" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Delete">
+                            <IconButton
+                              color="error"
+                              onClick={() => handleOpenModalDel(user._id)}
+                            >
+                              <DeleteIcon />
                             </IconButton>
                           </Tooltip>
                         </TableCell>

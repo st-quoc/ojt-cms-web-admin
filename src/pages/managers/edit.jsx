@@ -34,7 +34,7 @@ const EditManager = () => {
     try {
       await axiosClient.put(`${API_ROOT}/admin/manager/edit/${id}`, values);
       navigate(`/managers`);
-      toast.success('Manager created succsessfully!');
+      toast.success('Manager updated succsessfully!');
     } catch (error) {
       toast.error('Error when updating manager');
     }

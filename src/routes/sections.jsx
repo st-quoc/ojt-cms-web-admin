@@ -31,6 +31,7 @@ import { BlogEditAdmin } from '../pages/blogs/edit';
 import { BlogDetailAdmin } from '../pages/blogs/detail';
 import { CircularProgress } from '@mui/material';
 import OrderList from '../pages/order/orderList';
+import NoAccessPage from '../pages/NoAccessPage';
 
 const renderFallback = (
   <Box
@@ -67,7 +68,7 @@ const RequirePermission = ({ permissions, children }) => {
     return <CircularProgress sx={{ display: 'block', margin: '20px auto' }} />;
   }
 
-  const hasPermission = permissions.every(permission =>
+  const hasPermission = permissions.some(permission =>
     userPermissions.includes(permission),
   );
 
@@ -77,6 +78,7 @@ const RequirePermission = ({ permissions, children }) => {
 
   return children;
 };
+
 const RequireAuth = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
@@ -164,7 +166,12 @@ export function Router() {
           path: 'variants',
           element: (
             <RequirePermission
-              permissions={['view_variant', 'manager_variant']}
+              permissions={[
+                'view_variant',
+                'manager_variant',
+                'view_product',
+                'manager_product',
+              ]}
             >
               <VariantsPage />
             </RequirePermission>
@@ -358,6 +365,10 @@ export function Router() {
     {
       path: '404',
       element: <Page404 />,
+    },
+    {
+      path: 'access-denied',
+      element: <NoAccessPage />,
     },
     {
       path: '*',

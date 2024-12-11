@@ -74,6 +74,7 @@ export const TiersListAdmin = () => {
   const handleRowsPerPageChange = event => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    fetchTiers();
   };
 
   const handleSearchChange = event => {
@@ -154,7 +155,7 @@ export const TiersListAdmin = () => {
 
                           <Tooltip title="View Details">
                             <IconButton
-                            color="error"
+                              color="error"
                               onClick={() => handleOpenModalDel(tier._id)}
                             >
                               <DeleteIcon />

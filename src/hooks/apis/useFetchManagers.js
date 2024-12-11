@@ -29,7 +29,7 @@ const useFetchManagers = (page, rowsPerPage, search) => {
 
   useEffect(() => {
     fetchManagers();
-  }, []);
+  }, [page, rowsPerPage, search]);
 
   return { managers, loading, error, totalItems, fetchManagers };
 };

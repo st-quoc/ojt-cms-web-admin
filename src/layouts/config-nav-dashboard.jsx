@@ -25,7 +25,12 @@ export const navData = [
     title: 'Variants',
     path: '/variants',
     icon: icon('ic-cart'),
-    permission: ['view_variant', 'manager_variant'],
+    permission: [
+      'view_variant',
+      'manager_variant',
+      'view_product',
+      'manager_product',
+    ],
   },
   {
     title: 'Tiers',
@@ -37,7 +42,7 @@ export const navData = [
     title: 'Order List',
     path: '/orderList',
     icon: icon('ic-cart'),
-    permission: ['all'],
+    permission: ['view_order', 'manager_order'],
   },
   {
     title: 'Blogs',
