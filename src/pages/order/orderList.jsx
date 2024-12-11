@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
-  Button,
   Select,
   MenuItem,
   Table,
@@ -11,22 +10,23 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Pagination,
   Typography,
-  Stack,
   TablePagination,
   CircularProgress,
 } from '@mui/material';
-import useOrders from '../../hooks/apis/useOrders';
 import useFetchOrders from '../../hooks/apis/useOrders';
 import { Helmet } from 'react-helmet-async';
 import { DashboardContent } from '../../layouts/dashboard/main';
 import { AdminPageHeader } from '../../components/AdminPageHeader';
 import { CONFIG } from '../../config-global';
-import { ProductsFilter } from '../products/filter';
 import { OrdersFilter } from './filters';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { API_ROOT } from '../../constants';
+import axiosClient from '../../config/axios';
 
 const OrderList = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [filters, setFilters] = useState({
@@ -41,6 +41,7 @@ const OrderList = () => {
     rowsPerPage,
     filters,
   );
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -48,6 +49,18 @@ const OrderList = () => {
   const handleChangeRowsPerPage = event => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      await axiosClient.put(`${API_ROOT}/admin/order/${orderId}`, {
+        orderStatus: newStatus,
+      });
+      toast.success('Updated status successfully');
+      fetchOrders();
+    } catch (error) {
+      toast.error('Error when updating status');
+    }
   };
 
   return (
