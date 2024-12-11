@@ -102,6 +102,7 @@ export const BlogsListAdmin = () => {
   const handleSearchChange = event => {
     setSearch(event.target.value);
     setPage(0);
+    fetchBlogs();
   };
 
   const getStatusChip = status => {
