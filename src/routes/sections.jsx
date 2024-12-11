@@ -30,6 +30,7 @@ import BlogCreateAdmin from '../pages/blogs/create';
 import { BlogEditAdmin } from '../pages/blogs/edit';
 import { BlogDetailAdmin } from '../pages/blogs/detail';
 import { CircularProgress } from '@mui/material';
+import OrderList from '../pages/order/orderList';
 
 const renderFallback = (
   <Box
@@ -109,7 +110,17 @@ export function Router() {
       ),
       children: [
         { element: <Dashboard />, index: true },
-
+        
+        {
+          path: 'orderList',
+          element: (
+            <RequirePermission
+              permissions={['view_product', 'manager_product']|| null}
+            >
+              <OrderList />
+            </RequirePermission>
+          ),
+        },
         {
           path: 'products',
           element: (
