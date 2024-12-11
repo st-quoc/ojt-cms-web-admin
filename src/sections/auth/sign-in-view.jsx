@@ -51,6 +51,7 @@ export function SignInView() {
       toast.error(
         error.response?.data?.message || 'An error occurred. Please try again.',
       );
+      setLoading(false);
     }
   }, [email, password, router]);
 
